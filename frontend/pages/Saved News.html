@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Saved News - Worldnews</title>
+    <link rel="stylesheet" href="../css/style7.css">
+</head>
+<body>
+
+    <header>
+        <h1>Worldnews</h1>
+        <div class="header-links">
+            <a href="../pages/index.html">Home</a>
+            <a href="../pages/about us.html">about us</a>
+            <a href="../pages/subscriptions.html">donations</a>
+            <a href="../pages/contact us.html">contact us</a>
+            <a href="../pages/sign in.html">sign in</a>
+            <a href="../pages/log in.html">log in</a>
+            <!-- Botón de Account que abre el menú lateral -->
+            <button class="account-btn" onclick="toggleSidebar()">Account 👤</button>
+        </div>
+    </header> 
+
+    <!-- Menú Lateral (Sidebar Drawer) -->
+    <div id="accountSidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>My Account</h3>
+            <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+        </div>
+        <div class="sidebar-content">
+            <a href="../pages/articles admin.html" class="admin-link">Manage Articles 🛠️</a>
+            <a href="#">Profile Settings</a>
+            <a href="../pages/Saved News.html">My Saved News 📌</a>
+            <hr>
+            <a href="../pages/log in.html" style="color: #d9534f;">Log Out</a>
+        </div>
+    </div>
+    
+    <!-- Fondo oscuro para cerrar el menú al hacer clic afuera -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Barra de búsqueda inmediatamente debajo del header para unificar el fondo negro -->
+    <div class="search-container">
+        <input type="text" id="articleSearch" placeholder="Search saved articles..." onkeyup="searchArticles()">
+        <button onclick="searchArticles()">Search</button>
+    </div>
+
+    <!-- Título y descripción sobre el fondo degradado -->
+    <div class="saved-header-container">
+        <h2>My Saved Articles 📌</h2>
+        <p>Articles you have bookmarked to read later</p>
+    </div>
+
+    <hr>
+
+    <!-- Contenedor principal de artículos guardados -->
+    <div id="articles-container" class="articles-grid">
+        
+        <!-- Tarjeta 1 -->
+        <div class="saved-card article-item">
+            <div>
+                <div class="card-category">Noticias de Izquierda</div>
+                <a href="https://www.laizquierdadiario.com/Jornada-de-huelga-general-en-Italia-contra-Meloni-y-el-rearme-militar" target="_blank">
+                    Jornada de huelga general en Italia contra Meloni y el rearme militar
+                    <img src="../imagenes/imagen2.jpg" alt="Noticias de Izquierda">
+                </a>
+            </div>
+            <div class="card-actions">
+                <span class="saved-date">Saved on: Oct 2026</span>
+                <button class="remove-btn" onclick="removeSavedArticle(this)">Remove 🗑️</button>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="saved-card article-item">
+            <div>
+                <div class="card-category">Noticias de guerra</div>
+                <a href="https://as.com/actualidad/politica/guerra-de-ucrania-en-directo-rusia-responde-al-rearme-militar-de-la-otan-con-un-programa-a-gran-escala-f202511-d/" target="_blank">
+                    Guerra de Ucrania, en directo: Rusia responde al rearme militar de la OTAN
+                    <img src="../imagenes/image3.avif" alt="Noticias de guerra">
+                </a>
+            </div>
+            <div class="card-actions">
+                <span class="saved-date">Saved on: Oct 2026</span>
+                <button class="remove-btn" onclick="removeSavedArticle(this)">Remove 🗑️</button>
+            </div>
+        </div>
+
+    </div>
+
+    <p id="noArticlesMsg" class="no-saved-msg">You have no saved articles remaining.</p>
+
+    <hr>
+
+    <footer>
+        <h1>Angel Gabriel Rivera Resto was here</h1>
+        <h2>All rights reserved to Worldnews&#169;</h2>   
+    </footer>
+
+    <script>
+        // Búsqueda de artículos guardados
+        function searchArticles() {
+            let input = document.getElementById('articleSearch').value.toLowerCase();
+            let articles = document.getElementsByClassName('article-item');
+            
+            for (let i = 0; i < articles.length; i++) {
+                let text = articles[i].innerText.toLowerCase();
+                if (text.includes(input)) {
+                    articles[i].style.display = "";
+                } else {
+                    articles[i].style.display = "none";
+                }
+            }
+        }
+
+        // Abrir y cerrar panel lateral de Account
+        function toggleSidebar() {
+            const sidebar = document.getElementById('accountSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Eliminar tarjeta guardada de la pantalla
+        function removeSavedArticle(button) {
+            const card = button.closest('.saved-card');
+            card.remove();
+
+            const remainingArticles = document.querySelectorAll('.saved-card');
+            if (remainingArticles.length === 0) {
+                document.getElementById('noArticlesMsg').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
