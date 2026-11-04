@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contact us - Worldnews</title>
+    <link rel="stylesheet" href="../css/style4.css">
+</head>
+<body>
+    
+    <header>
+        <h1>Worldnews</h1>
+        <div class="header-links navigation-links">
+            <a href="../pages/index.html">home</a>
+            <a href="../pages/subscriptions.html">donations</a>
+            <a href="../pages/contact us.html">contact us</a>
+            <a href="../pages/sign in.html">sign in</a>
+            <a href="../pages/log in.html">log in</a>
+            <!-- Botón de Account que abre el menú lateral -->
+            <button class="account-btn" onclick="toggleSidebar()">Account 👤</button>
+        </div>
+    </header> 
+
+    <!-- Menú Lateral (Sidebar Drawer) -->
+    <div id="accountSidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>My Account</h3>
+            <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+        </div>
+        <div class="sidebar-content">
+            <a href="../pages/articles admin.html" class="admin-link">Manage Articles 🛠️</a>
+            <a href="#">Profile Settings</a>
+            <a href="../pages/Saved News.html">My Saved News 📌</a>
+            <hr>
+            <a href="../pages/log in.html" style="color: #d9534f;">Log Out</a>
+        </div>
+    </div>
+    
+    <!-- Fondo oscuro para cerrar el menú al hacer clic afuera -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <hr>
+    
+    <h1>Contact Us</h1>
+    
+    <p>Our contacts are:</p>
+    <ul>
+        <li>email: Worldnews.com</li>
+        <li>phone number: 787-756-3245</li>
+        <li>X: @Worldnews_news</li>
+    </ul>
+    
+    <hr>
+
+    <footer>
+        <h1>Angel Gabriel Rivera Resto was here</h1>
+        <h2>All rights reserved to Worldnews&#169;</h2>   
+    </footer>
+
+    <script>
+        // Función para abrir y cerrar el panel lateral de Account
+        function toggleSidebar() {
+            const sidebar = document.getElementById('accountSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
