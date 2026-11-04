@@ -1,0 +1,10 @@
+[build]
+  publish = "frontend"
+
+# The site's home page lives in frontend/pages/index.html, so there is no
+# index.html at the root of the published folder. Send visitors there.
+# A redirect (not a rewrite) keeps the "../css" and "../imagenes" relative paths working.
+[[redirects]]
+  from = "/"
+  to = "/pages/index.html"
+  status = 301
