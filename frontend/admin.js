@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const API_URL = 'http://localhost:3000/api/articles';
+    const API_URL = '/api/articles';
     const publishBtn = document.querySelector('.submit-btn');
     const editorPage = document.querySelector('.word-page');
     const adminList = document.querySelector('.admin-list');
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const category = "General"; 
             const image_url = "../imagenes/imagen2.jpg"; 
-            const usuario_id = 1; // ID del administrador por defecto
+            const usuario_id = Number(localStorage.getItem('usuarioId')) || null; // ID del usuario que inició sesión
 
             try {
                 const response = await fetch(API_URL, {

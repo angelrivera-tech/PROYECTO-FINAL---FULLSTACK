@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/articles/${articleId}`);
+        const response = await fetch(`/api/articles/${encodeURIComponent(articleId)}`);
         if (!response.ok) throw new Error('No se pudo obtener el artículo');
 
         const article = await response.json();

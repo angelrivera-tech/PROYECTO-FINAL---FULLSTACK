@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Detectar si estamos en local (incluyendo doble clic con file://) o en producción
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === ''
-            ? 'http://localhost:3000/api/articles'
-            : 'https://TU-BACKEND-EN-RENDER.onrender.com/api/articles';
+        const API_URL = '/api/articles';
 
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error('Error al conectar con el servidor');
@@ -103,6 +101,7 @@ function actualizarInterfazUsuario() {
 function cerrarSesion(event) {
     event.preventDefault();
     localStorage.removeItem('usuarioActivo');
+    localStorage.removeItem('usuarioId');
     alert('Has cerrado sesión correctamente.');
     window.location.href = '../pages/index.html';
 }
