@@ -1,6 +1,6 @@
 import type { Config } from "@netlify/functions";
 import bcrypt from "bcryptjs";
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
@@ -22,8 +22,9 @@ export default async (req: Request) => {
       return Response.json({ error: "Usuario o contraseña incorrectos" }, { status: 400 });
     }
 
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
+    const emailUser = process.env.EMAIL_USER?.trim();
+    // Las contraseñas de aplicación de Gmail se muestran con espacios; se eliminan por si se copiaron así
+    const emailPass = process.env.EMAIL_PASS?.replace(/\s+/g, "");
     if (!emailUser || !emailPass) {
       console.error("EMAIL_USER / EMAIL_PASS no están configuradas");
       return Response.json({ error: "El servicio de correo no está configurado" }, { status: 500 });
@@ -38,26 +39,29 @@ export default async (req: Request) => {
       .where(eq(usuarios.id, user.id));
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: { user: emailUser, pass: emailPass },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
 
-    await transporter.sendMail({
-      from: emailUser,
-      to: user.email,
-      subject: "Worldnews - Tu código de verificación 2FA",
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
-          <h2 style="color: #0275d8;">Worldnews Security</h2>
-          <p>Hola <strong>${user.username}</strong>,</p>
-          <p>Has solicitado iniciar sesión. Utiliza el siguiente código de 6 dígitos para completar tu acceso:</p>
-          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; border-radius: 6px; margin: 20px 0;">
-            <span style="font-size: 2rem; font-weight: bold; color: #0275d8; letter-spacing: 6px;">${code}</span>
-          </div>
-          <p style="font-size: 0.9rem; color: #666;">Este código expira en 5 minutos. Si no solicitaste este código, puedes ignorar este mensaje.</p>
-        </div>
-      `,
-    });
+    try {
+      await sendCode(transporter, emailUser, user.email, user.username, code);
+    } catch (mailErr: any) {
+      console.error("Error de Gmail al enviar el código 2FA:", mailErr?.code, mailErr?.responseCode, mailErr?.message);
+      const authFailed = mailErr?.code === "EAUTH" || mailErr?.responseCode === 535;
+      return Response.json(
+        {
+          error: authFailed
+            ? "Gmail rechazó las credenciales de correo (revisa EMAIL_USER y la contraseña de aplicación EMAIL_PASS)"
+            : "No se pudo enviar el correo de verificación. Inténtalo de nuevo.",
+        },
+        { status: 502 }
+      );
+    }
 
     return Response.json({
       requires2FA: true,
@@ -66,8 +70,33 @@ export default async (req: Request) => {
     });
   } catch (err) {
     console.error(err);
-    return Response.json({ error: "Error al enviar el correo de verificación" }, { status: 500 });
+    return Response.json({ error: "Error al iniciar sesión" }, { status: 500 });
   }
 };
+
+async function sendCode(
+  transporter: Transporter,
+  from: string,
+  to: string,
+  username: string,
+  code: string
+) {
+  await transporter.sendMail({
+      from: `"Worldnews" <${from}>`,
+      to,
+      subject: "Worldnews - Tu código de verificación 2FA",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
+          <h2 style="color: #0275d8;">Worldnews Security</h2>
+          <p>Hola <strong>${username}</strong>,</p>
+          <p>Has solicitado iniciar sesión. Utiliza el siguiente código de 6 dígitos para completar tu acceso:</p>
+          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; border-radius: 6px; margin: 20px 0;">
+            <span style="font-size: 2rem; font-weight: bold; color: #0275d8; letter-spacing: 6px;">${code}</span>
+          </div>
+          <p style="font-size: 0.9rem; color: #666;">Este código expira en 5 minutos. Si no solicitaste este código, puedes ignorar este mensaje.</p>
+        </div>
+      `,
+  });
+}
 
 export const config: Config = { path: "/api/login" };
