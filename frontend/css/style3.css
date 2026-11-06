@@ -1,0 +1,416 @@
+/* Base setup to allow full-height positioning */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-attachment: fixed;
+    color: #222222;
+    overflow-x: hidden;
+}
+
+/* Header styles */
+header {
+    background-color: #111111;
+    color: #ffffff;
+    padding: 25px 20px 0px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+header h1, h1 {
+    color: #ffffff;
+    margin: 0 0 20px 0;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+/* Navigation bar links container */
+.header-links,
+header nav {
+    background-color: #1b1b1b;
+    padding: 12px 20px 6px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    box-sizing: border-box;
+}
+
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+header a:hover {
+    background-color: #ffffff;
+    color: #111111;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Search Container styling */
+.search-container {
+    background-color: #1b1b1b;
+    padding: 0px 20px 15px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+    width: 220px;
+}
+
+.search-container button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    background-color: #0275d8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-container button:hover {
+    background-color: #025aa5;
+}
+
+h2 {
+    color: #1a1a1a;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+a:not(header a):not(.sidebar-content a) {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: color 0.3s ease;
+    max-width: 400px;
+    flex: 1 1 300px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 15px auto;
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    object-fit: cover;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+}
+
+a:not(header a):not(.sidebar-content a):hover img {
+    transform: scale(1.03) translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.22);
+    filter: brightness(1.05);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.2), transparent);
+    margin: 25px auto;
+    width: 80%;
+}
+
+footer {
+    background-color: #111111;
+    color: #ffffff;
+    padding: 30px 20px;
+    width: 100%;                  
+    margin-top: auto;             
+    box-sizing: border-box;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+}
+
+footer h1, footer h2 {
+    color: #cccccc;
+    margin: 5px 0;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+/* Account Button & Sidebar Drawer */
+.account-btn {
+    background-color: #0275d8;
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+}
+
+.account-btn:hover {
+    background-color: #ffffff;
+    color: #111111;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 280px;
+    height: 100%;
+    background-color: #1b1b1b;
+    color: #ffffff;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 9999 !important;
+    padding: 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 15px;
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+.close-btn {
+    font-size: 28px;
+    cursor: pointer;
+    color: #aaaaaa;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #ffffff;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.sidebar-content a {
+    color: #dddddd;
+    text-decoration: none;
+    padding: 12px 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    display: block;
+    margin: 4px 0;
+}
+
+.sidebar-content a:hover {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+.sidebar-content a.admin-link {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    display: none;
+    z-index: 9998 !important;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Donations Container */
+.subscription-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.subscription-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1 1 250px;
+    max-width: 320px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.subscription-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.subscription-box p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-transform: capitalize;
+}
+
+.subscription-box img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin: 0 auto;
+}
+
+/* ==========================================
+   CUSTOM INLINE MODAL POPUP STYLES
+   ========================================== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-box {
+    background-color: #1b1b1b;
+    color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.modal-box h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #ffffff;
+}
+
+.modal-box p {
+    color: #cccccc;
+    font-size: 1rem;
+    margin: 15px 0 25px 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.modal-btn-confirm {
+    background-color: #0275d8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.modal-btn-confirm:hover {
+    background-color: #025aa5;
+}
+
+.modal-btn-cancel {
+    background-color: #333333;
+    color: #dddddd;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.modal-btn-cancel:hover {
+    background-color: #444444;
+    color: #ffffff;
+}
