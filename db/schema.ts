@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, text, integer, timestamp, unique } from "drizzle-orm/pg-core";
 
 // Tabla de Usuarios
 export const usuarios = pgTable("usuarios", {
@@ -20,3 +20,19 @@ export const articulos = pgTable("articulos", {
   usuarioId: integer("usuario_id").references(() => usuarios.id, { onDelete: "set null" }),
   fechaPublicacion: timestamp("fecha_publicacion").defaultNow(),
 });
+
+// Artículos guardados (pin) por cada usuario para leer después
+export const articulosGuardados = pgTable(
+  "articulos_guardados",
+  {
+    id: serial().primaryKey(),
+    usuarioId: integer("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    articuloId: integer("articulo_id")
+      .notNull()
+      .references(() => articulos.id, { onDelete: "cascade" }),
+    fechaGuardado: timestamp("fecha_guardado").defaultNow(),
+  },
+  (t) => [unique("articulos_guardados_usuario_articulo_key").on(t.usuarioId, t.articuloId)]
+);

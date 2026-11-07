@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) throw new Error('Error al conectar con el servidor');
 
         const articles = await response.json();
+        if (window.wnPins) await wnPins.load();
         articlesContainer.innerHTML = '';
 
         if (articles.length === 0) {
@@ -55,11 +56,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </h3>
                         <small class="article-date">Publicado: ${fecha}</small>
                         <p class="article-excerpt">${excerpt}</p>
-                        <a href="article.html?id=${article.id}" class="read-more-btn">Leer más &rarr;</a>
+                        <div class="article-card-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <a href="article.html?id=${article.id}" class="read-more-btn">Leer más &rarr;</a>
+                        </div>
                     </div>
                 </div>
                 <hr>
             `;
+
+            if (window.wnPins) {
+                articleDiv.querySelector('.article-card-actions').appendChild(wnPins.button(article.id));
+            }
 
             articlesContainer.appendChild(articleDiv);
         });
@@ -98,10 +105,10 @@ function actualizarInterfazUsuario() {
 }
 
 // Función para cerrar sesión desde el menú
-function cerrarSesion(event) {
+async function cerrarSesion(event) {
     event.preventDefault();
     localStorage.removeItem('usuarioActivo');
     localStorage.removeItem('usuarioId');
-    alert('Has cerrado sesión correctamente.');
+    await wnAlert('Has cerrado sesión correctamente.', { title: 'Sesión cerrada' });
     window.location.href = '../pages/index.html';
 }
