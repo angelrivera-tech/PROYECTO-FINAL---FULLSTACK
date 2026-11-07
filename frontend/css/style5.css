@@ -209,3 +209,99 @@ footer h1, footer h2, footer p {
     font-size: 1rem;
     font-weight: normal;
 }
+/* Enlace "¿Olvidaste tu contraseña o usuario?" y página de recuperación */
+.forgot-link {
+    text-align: right;
+    margin: -4px 0 14px 0;
+    font-size: 0.85rem;
+}
+
+.forgot-link a,
+.recovery-back a {
+    color: #0275d8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-link a:hover,
+.recovery-back a:hover {
+    text-decoration: underline;
+}
+
+.recovery-panel[hidden] {
+    display: none;
+}
+
+.recovery-panel h3 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 1.15rem;
+}
+
+.recovery-intro {
+    color: #555555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0 0 12px 0;
+}
+
+.recovery-btn {
+    background-color: #0275d8;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.recovery-btn:hover {
+    background-color: #025aa5;
+    transform: translateY(-2px);
+}
+
+.recovery-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
+
+.recovery-btn.success {
+    background-color: #28a745;
+}
+
+.recovery-btn.success:hover {
+    background-color: #218838;
+}
+
+.recovery-back {
+    text-align: center;
+    margin: 16px 0 0 0;
+    font-size: 0.9rem;
+}
+
+.recovery-message {
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    padding: 12px;
+    color: #333333;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0 0 8px 0;
+}
+
+.recovery-message.error {
+    background-color: #fdecea;
+    color: #a12622;
+}
+
+a.recovery-btn {
+    display: block;
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+}

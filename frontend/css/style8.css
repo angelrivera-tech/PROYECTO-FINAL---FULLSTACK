@@ -172,3 +172,54 @@ a.profile-btn:not(header a):not(.sidebar-content a):hover {
     background-color: #025aa5;
     color: #ffffff;
 }
+
+/* Datos sensibles (correo y contraseña) */
+.sensitive-list {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 14px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.sensitive-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background-color: #f5f7fa;
+}
+
+.sensitive-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sensitive-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555555;
+}
+
+.sensitive-value {
+    color: #111111;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    letter-spacing: 0.5px;
+}
+
+.sensitive-row .edit-btn {
+    flex: none;
+}
+
+.sensitive-row .edit-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.sensitive-hint {
+    margin: 4px 0 0 0;
+}

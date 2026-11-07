@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Recuperar cuenta - Worldnews</title>
+    <link rel="stylesheet" href="../css/style5.css">
+</head>
+<body>
+    <header><h1>Worldnews</h1></header>
+
+    <div class="navigation-links">
+        <a href="../pages/index.html">home</a>
+        <a href="../pages/about us.html">about us</a>
+        <a href="../pages/subscriptions.html">donations</a>
+        <a href="../pages/contact us.html">contact us</a>
+        <a href="../pages/sign in.html">sign in</a>
+        <a href="../pages/log in.html">log in</a>
+    </div>
+
+    <h2 id="recoveryTitle">Recuperar cuenta</h2>
+
+    <!-- ¿Olvidaste tu contraseña o usuario? (sin enlace) -->
+    <form id="forgotForm" class="recovery-panel" hidden>
+        <h3>¿Olvidaste tu contraseña o usuario?</h3>
+        <p class="recovery-intro">Escribe el correo electrónico de tu cuenta. Te enviaremos tu nombre de usuario y un enlace para crear una nueva contraseña.</p>
+        <label for="forgotEmail">Correo electrónico:</label>
+        <input type="email" id="forgotEmail" autocomplete="email" required>
+        <button type="submit" class="recovery-btn">Enviar correo de recuperación</button>
+        <p class="recovery-back"><a href="../pages/log in.html">← Volver a log in</a></p>
+    </form>
+
+    <!-- Comprobando el enlace -->
+    <form id="loadingPanel" class="recovery-panel" hidden>
+        <p class="recovery-message">Comprobando el enlace...</p>
+    </form>
+
+    <!-- Nueva contraseña -->
+    <form id="passwordForm" class="recovery-panel" hidden>
+        <h3>Crea una nueva contraseña</h3>
+        <p class="recovery-intro">Cuenta: <strong class="js-username"></strong></p>
+        <label for="newPassword">Nueva contraseña:</label>
+        <input type="password" id="newPassword" autocomplete="new-password" minlength="6" required>
+        <label for="confirmPassword">Repite la contraseña:</label>
+        <input type="password" id="confirmPassword" autocomplete="new-password" minlength="6" required>
+        <p class="hint-text">Mínimo 6 caracteres.</p>
+        <button type="submit" class="recovery-btn success">Guardar contraseña</button>
+    </form>
+
+    <!-- Nuevo correo -->
+    <form id="emailForm" class="recovery-panel" hidden>
+        <h3>Cambia tu correo electrónico</h3>
+        <p class="recovery-intro">Cuenta: <strong class="js-username"></strong><br>Correo actual: <strong id="currentEmail"></strong></p>
+        <label for="newEmail">Nuevo correo electrónico:</label>
+        <input type="email" id="newEmail" autocomplete="email" required>
+        <p class="hint-text">Te enviaremos un enlace al nuevo correo para confirmar que es tuyo. El cambio se aplica cuando lo abras.</p>
+        <button type="submit" class="recovery-btn">Enviar enlace de confirmación</button>
+    </form>
+
+    <!-- Confirmar nuevo correo -->
+    <form id="confirmForm" class="recovery-panel" hidden>
+        <h3>Confirma tu nuevo correo</h3>
+        <p class="recovery-intro">Cuenta: <strong class="js-username"></strong><br>Nuevo correo: <strong id="pendingEmail"></strong></p>
+        <button type="submit" class="recovery-btn success">Confirmar nuevo correo</button>
+    </form>
+
+    <!-- Resultado -->
+    <form id="resultPanel" class="recovery-panel" hidden>
+        <p id="resultMessage" class="recovery-message"></p>
+        <a id="resultLink" class="recovery-btn" href="../pages/log in.html">Ir a log in</a>
+    </form>
+
+    <footer>
+        <h1>Angel Gabriel Rivera Resto was here</h1>
+        <h2>All rights reserved to Worldnews &copy;</h2>
+    </footer>
+
+    <script src="../dialogs.js"></script>
+    <script src="../account-recovery.js"></script>
+</body>
+</html>

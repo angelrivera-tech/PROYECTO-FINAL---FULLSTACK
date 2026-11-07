@@ -47,8 +47,7 @@
             if (!response.ok) throw new Error(data.error || 'Error al cargar el perfil');
 
             document.getElementById('infoUsername').textContent = data.username;
-            document.getElementById('infoEmail').textContent = data.email;
-            document.getElementById('infoId').textContent = '#' + data.id;
+            document.getElementById('infoEmail').textContent = data.email_masked;
             document.getElementById('statPublished').textContent = data.published_count;
             document.getElementById('statSaved').textContent = data.saved_count;
             avatarInitial.textContent = (data.username || '?').charAt(0);
@@ -125,6 +124,44 @@
             setBusy(false);
         }
     });
+
+    // Cambio de correo o contraseña: se envía un enlace seguro al correo de la cuenta
+    async function requestChange(type, button) {
+        const what = type === 'email' ? 'email address' : 'password';
+        const ok = await wnConfirm(
+            `We'll send a secure link to your current email address. Open it to change your ${what}. The link expires in 30 minutes.`,
+            { title: type === 'email' ? 'Change email' : 'Change password', okText: 'Send link' }
+        );
+        if (!ok) return;
+
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = 'Sending...';
+        try {
+            const response = await fetch('/api/account/request-change', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: usuarioId, type }),
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                await wnAlert(result.error || 'The email could not be sent.', { title: 'Something went wrong', danger: true });
+                return;
+            }
+            await wnAlert(result.message || 'Check your email for the link.', { title: 'Check your email 📧' });
+        } catch (error) {
+            console.error('Error al solicitar el cambio:', error);
+            await wnAlert('Could not connect to the server.', { title: 'Connection error', danger: true });
+        } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+
+    const emailBtn = document.getElementById('changeEmailBtn');
+    const passwordBtn = document.getElementById('changePasswordBtn');
+    emailBtn.addEventListener('click', () => requestChange('email', emailBtn));
+    passwordBtn.addEventListener('click', () => requestChange('password', passwordBtn));
 
     load();
 })();
