@@ -60,9 +60,10 @@
 
     <p id="noArticlesMsg" class="no-saved-msg" style="display: block;">You have no saved articles yet.</p>
 
+    <!-- Artículos publicados por el usuario que inició sesión (oculto sin sesión) -->
+    <section id="my-published-section">
     <hr>
 
-    <!-- Artículos publicados por el usuario que inició sesión -->
     <div class="saved-header-container">
         <h2>My Published Articles ✍️</h2>
         <p>Articles you have written. Click "Edit" to update them.</p>
@@ -71,6 +72,7 @@
     <div id="my-articles-container" class="articles-grid">
         <p class="my-articles-status">Loading your articles...</p>
     </div>
+    </section>
 
     <!-- Ventana para editar un artículo -->
     <div id="editOverlay" class="edit-overlay" onclick="closeEditModal()"></div>
@@ -133,6 +135,7 @@
 
     </script>
     <script src="../dialogs.js"></script>
+    <script src="../pins.js"></script>
     <script src="../saved-articles.js"></script>
     <script src="../my-articles.js"></script>
 </body>

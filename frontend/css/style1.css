@@ -322,3 +322,25 @@ footer h1, footer h2 {
 .sidebar-overlay.active {
     display: block;
 }
+/* Home page card actions: "Leer más" centered, pin button to its right */
+.article-card-actions {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.article-card-actions .read-more-btn {
+    grid-column: 2;
+    flex: none;
+    max-width: none;
+    margin: 0;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.article-card-actions .pin-btn {
+    grid-column: 3;
+    justify-self: start;
+}

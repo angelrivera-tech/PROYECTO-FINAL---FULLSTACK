@@ -6,6 +6,13 @@
     if (!container) return;
 
     const usuarioId = Number(localStorage.getItem('usuarioId')) || null;
+
+    // Sin sesión: no mostrar la sección de artículos publicados
+    if (!usuarioId) {
+        const section = document.getElementById('my-published-section');
+        if (section) section.remove();
+        return;
+    }
     const modal = document.getElementById('editModal');
     const overlay = document.getElementById('editOverlay');
     const editCategory = document.getElementById('editCategory');
