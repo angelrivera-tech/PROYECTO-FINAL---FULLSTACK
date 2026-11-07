@@ -90,17 +90,6 @@ function actualizarInterfazUsuario() {
                 link.style.display = 'none';
             }
         });
-
-        // Agregar un botón de cerrar sesión dinámicamente si no existe
-        if (!document.getElementById('logoutBtn')) {
-            const logoutLink = document.createElement('a');
-            logoutLink.id = 'logoutBtn';
-            logoutLink.href = '#';
-            logoutLink.textContent = `Cerrar sesión (${usuarioLogueado})`;
-            logoutLink.style.color = '#ff4d4d';
-            logoutLink.onclick = cerrarSesion;
-            linksHeader.appendChild(logoutLink);
-        }
     }
 }
 

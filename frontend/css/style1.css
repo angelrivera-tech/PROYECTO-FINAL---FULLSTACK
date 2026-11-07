@@ -344,3 +344,16 @@ footer h1, footer h2 {
     grid-column: 3;
     justify-self: start;
 }
+
+/* Article body: headings inside the white content area must be dark,
+   overriding the global white h1 rule used for the header */
+#single-article-container h1,
+#single-article-container h2,
+#single-article-container h3,
+#single-article-container h4,
+#single-article-container h5,
+#single-article-container h6,
+#single-article-container strong,
+#single-article-container b {
+    color: #1a1a1a;
+}
