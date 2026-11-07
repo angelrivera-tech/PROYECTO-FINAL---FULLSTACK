@@ -25,6 +25,40 @@ export default async (req: Request, context: Context) => {
       }
     }
 
+    if (req.method === "PUT") {
+      const { title, category, image_url, content, usuario_id } = await readJson(req);
+      if (!title || !content) {
+        return Response.json({ error: "El título y el contenido son obligatorios" }, { status: 400 });
+      }
+
+      try {
+        const [existing] = await db.select().from(articulos).where(eq(articulos.id, id));
+        if (!existing) return Response.json({ error: "Artículo no encontrado" }, { status: 404 });
+
+        // Solo el autor del artículo puede editarlo
+        const authorId = Number(usuario_id);
+        if (existing.usuarioId === null || existing.usuarioId !== authorId) {
+          return Response.json({ error: "Solo el autor puede editar este artículo" }, { status: 403 });
+        }
+
+        const [updated] = await db
+          .update(articulos)
+          .set({
+            title,
+            category: category || existing.category,
+            imageUrl: image_url === undefined ? existing.imageUrl : image_url || null,
+            content,
+          })
+          .where(eq(articulos.id, id))
+          .returning();
+
+        return Response.json({ message: "Artículo actualizado con éxito", article: toArticleJson(updated) });
+      } catch (err) {
+        console.error(err);
+        return Response.json({ error: "Error al actualizar el artículo" }, { status: 500 });
+      }
+    }
+
     if (req.method === "DELETE") {
       try {
         await db.delete(articulos).where(eq(articulos.id, id));
@@ -41,6 +75,19 @@ export default async (req: Request, context: Context) => {
   // Rutas sin ID: /api/articles
   if (req.method === "GET") {
     try {
+      // Filtro opcional por autor: /api/articles?usuario_id=5
+      const authorParam = new URL(req.url).searchParams.get("usuario_id");
+      if (authorParam !== null) {
+        const authorId = Number(authorParam);
+        if (!Number.isInteger(authorId)) return Response.json([]);
+        const rows = await db
+          .select()
+          .from(articulos)
+          .where(eq(articulos.usuarioId, authorId))
+          .orderBy(desc(articulos.fechaPublicacion));
+        return Response.json(rows.map(toArticleJson));
+      }
+
       const rows = await db.select().from(articulos).orderBy(desc(articulos.fechaPublicacion));
       return Response.json(rows.map(toArticleJson));
     } catch (err) {
