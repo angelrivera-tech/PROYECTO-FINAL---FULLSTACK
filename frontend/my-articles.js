@@ -86,6 +86,7 @@
                     <span class="saved-date">Published: ${escapeHtml(fecha)}</span>
                     <div class="card-buttons">
                         <button type="button" class="cancel-btn" data-view="${article.id}">View</button>
+                        <button type="button" class="remove-btn" data-delete="${article.id}">Delete 🗑️</button>
                         <button type="button" class="edit-btn" data-edit="${article.id}">Edit ✏️</button>
                     </div>
                 </div>
@@ -100,9 +101,39 @@
             window.location.href = `article.html?id=${encodeURIComponent(viewId)}`;
             return;
         }
+        const deleteId = event.target.closest('[data-delete]')?.getAttribute('data-delete');
+        if (deleteId) {
+            deleteArticle(Number(deleteId), event.target.closest('[data-delete]'));
+            return;
+        }
         const editId = event.target.closest('[data-edit]')?.getAttribute('data-edit');
         if (editId) openEditModal(Number(editId));
     });
+
+    async function deleteArticle(id, button) {
+        const article = myArticles.find(a => a.id === id);
+        if (!article) return;
+        if (!confirm(`Delete "${article.title}"? This cannot be undone.`)) return;
+
+        button.disabled = true;
+        try {
+            const response = await fetch(`${API_URL}/${id}?usuario_id=${encodeURIComponent(usuarioId)}`, {
+                method: 'DELETE',
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                alert(result.error || 'The article could not be deleted.');
+                button.disabled = false;
+                return;
+            }
+            myArticles = myArticles.filter(a => a.id !== id);
+            renderMyArticles();
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+            alert('Could not connect to the server.');
+            button.disabled = false;
+        }
+    }
 
     function openEditModal(id) {
         const article = myArticles.find(a => a.id === id);
