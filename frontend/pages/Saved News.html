@@ -93,6 +93,45 @@
 
     <hr>
 
+    <!-- Artículos publicados por el usuario que inició sesión -->
+    <div class="saved-header-container">
+        <h2>My Published Articles ✍️</h2>
+        <p>Articles you have written. Click "Edit" to update them.</p>
+    </div>
+
+    <div id="my-articles-container" class="articles-grid">
+        <p class="my-articles-status">Loading your articles...</p>
+    </div>
+
+    <!-- Ventana para editar un artículo -->
+    <div id="editOverlay" class="edit-overlay" onclick="closeEditModal()"></div>
+    <div id="editModal" class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="edit-modal-header">
+            <h3 id="editModalTitle">Edit Article</h3>
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+        </div>
+        <label class="edit-label" for="editCategory">Category</label>
+        <input type="text" id="editCategory" class="edit-input" placeholder="General">
+        <label class="edit-label" for="editImage">Cover image URL (optional)</label>
+        <input type="text" id="editImage" class="edit-input" placeholder="../imagenes/imagen2.jpg">
+        <label class="edit-label">Content (the first heading is the title)</label>
+        <div class="edit-toolbar">
+            <button type="button" class="edit-tool-btn" data-command="bold"><b>B</b></button>
+            <button type="button" class="edit-tool-btn" data-command="italic"><i>I</i></button>
+            <button type="button" class="edit-tool-btn" data-command="underline"><u>U</u></button>
+            <button type="button" class="edit-tool-btn" data-command="insertImage">📷 Photo</button>
+            <button type="button" class="edit-tool-btn" data-command="createLink">🔗 Link</button>
+        </div>
+        <div id="editContent" class="edit-content" contenteditable="true"></div>
+        <p id="editError" class="edit-error"></p>
+        <div class="edit-actions">
+            <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+            <button type="button" id="saveEditBtn" class="save-btn">Save Changes</button>
+        </div>
+    </div>
+
+    <hr>
+
     <footer>
         <h1>Angel Gabriel Rivera Resto was here</h1>
         <h2>All rights reserved to Worldnews&#169;</h2>   
@@ -128,11 +167,12 @@
             const card = button.closest('.saved-card');
             card.remove();
 
-            const remainingArticles = document.querySelectorAll('.saved-card');
+            const remainingArticles = document.querySelectorAll('#articles-container .saved-card');
             if (remainingArticles.length === 0) {
                 document.getElementById('noArticlesMsg').style.display = 'block';
             }
         }
     </script>
+    <script src="../my-articles.js"></script>
 </body>
 </html>
