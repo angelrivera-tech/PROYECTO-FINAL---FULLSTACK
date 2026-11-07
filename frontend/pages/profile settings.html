@@ -46,7 +46,7 @@
 
     <div class="saved-header-container">
         <h2>Profile Settings 👤</h2>
-        <p>See your account information and update your profile picture</p>
+        <p>See your account information, update your profile picture and manage your email and password</p>
     </div>
 
     <hr>
@@ -81,11 +81,26 @@
             <dl class="profile-info">
                 <dt>Username</dt>
                 <dd id="infoUsername">—</dd>
-                <dt>Email</dt>
-                <dd id="infoEmail">—</dd>
-                <dt>User ID</dt>
-                <dd id="infoId">—</dd>
             </dl>
+
+            <!-- Datos sensibles: ocultos y solo se cambian con un enlace enviado al correo -->
+            <div class="sensitive-list">
+                <div class="sensitive-row">
+                    <div class="sensitive-text">
+                        <span class="sensitive-label">Email 🔒</span>
+                        <span id="infoEmail" class="sensitive-value">—</span>
+                    </div>
+                    <button type="button" id="changeEmailBtn" class="edit-btn">Change</button>
+                </div>
+                <div class="sensitive-row">
+                    <div class="sensitive-text">
+                        <span class="sensitive-label">Password 🔒</span>
+                        <span class="sensitive-value">••••••••</span>
+                    </div>
+                    <button type="button" id="changePasswordBtn" class="edit-btn">Change</button>
+                </div>
+                <p class="profile-hint sensitive-hint">For your security, this information is hidden. To change it, we send a secure link to your email.</p>
+            </div>
             <div class="profile-stats">
                 <a class="profile-stat" href="../pages/Saved News.html">
                     <span id="statPublished" class="stat-number">0</span>

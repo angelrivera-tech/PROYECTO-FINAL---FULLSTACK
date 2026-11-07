@@ -36,3 +36,20 @@ export const articulosGuardados = pgTable(
   },
   (t) => [unique("articulos_guardados_usuario_articulo_key").on(t.usuarioId, t.articuloId)]
 );
+
+// Enlaces de un solo uso enviados por correo para recuperar o cambiar datos de la cuenta
+//   password_reset -> restablecer la contraseña
+//   email_change   -> enlace al correo actual para elegir un correo nuevo
+//   email_confirm  -> enlace al correo nuevo para confirmarlo
+export const tokensCuenta = pgTable("tokens_cuenta", {
+  id: serial().primaryKey(),
+  usuarioId: integer("usuario_id")
+    .notNull()
+    .references(() => usuarios.id, { onDelete: "cascade" }),
+  tipo: varchar({ length: 30 }).notNull(),
+  tokenHash: varchar("token_hash", { length: 64 }).notNull().unique(),
+  nuevoEmail: varchar("nuevo_email", { length: 255 }),
+  expiraEn: timestamp("expira_en").notNull(),
+  usadoEn: timestamp("usado_en"),
+  creadoEn: timestamp("creado_en").defaultNow().notNull(),
+});

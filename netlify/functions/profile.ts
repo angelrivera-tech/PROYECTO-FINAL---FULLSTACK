@@ -3,6 +3,7 @@ import { getStore } from "@netlify/blobs";
 import { count, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { articulos, articulosGuardados, usuarios } from "../../db/schema.js";
+import { maskEmail } from "../lib/mailer.js";
 
 // Perfil del usuario y foto de perfil
 //   GET    /api/profile?usuario_id=5                 -> datos del usuario
@@ -63,8 +64,10 @@ export default async (req: Request, context: Context) => {
         avatars().getMetadata(avatarKey(usuarioId)),
       ]);
       const version = avatarMeta?.metadata?.updatedAt;
+      // Los datos sensibles no se envían completos al navegador
       return Response.json({
-        ...user,
+        username: user.username,
+        email_masked: maskEmail(user.email),
         published_count: Number(published?.n ?? 0),
         saved_count: Number(saved?.n ?? 0),
         avatar_url: avatarMeta ? `/api/profile/avatar/${usuarioId}?v=${encodeURIComponent(String(version ?? ""))}` : null,
