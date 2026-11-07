@@ -35,6 +35,7 @@
         <h2>All rights reserved to Worldnews &copy;</h2>   
     </footer>
 
+    <script src="../dialogs.js"></script>
     <script>
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -51,14 +52,14 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+                    await wnAlert('¡Registro exitoso! Ahora puedes iniciar sesión.', { title: 'Cuenta creada' });
                     window.location.href = '../pages/log in.html';
                 } else {
-                    alert(data.error || 'Error al registrar el usuario');
+                    await wnAlert(data.error || 'Error al registrar el usuario', { title: 'No se pudo registrar', danger: true });
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('No se pudo conectar con el servidor backend.');
+                await wnAlert('No se pudo conectar con el servidor backend.', { title: 'Error de conexión', danger: true });
             }
         });
     </script>

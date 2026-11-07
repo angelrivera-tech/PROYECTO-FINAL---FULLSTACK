@@ -1,10 +1,10 @@
 // admin.js - Panel de administración para Worldnews
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // 0. VERIFICACIÓN DE SESIÓN: Asegurar que el usuario esté logueado
     const usuarioLogueado = localStorage.getItem('usuarioActivo');
     if (!usuarioLogueado) {
-        alert('Debes iniciar sesión para acceder al panel de administración.');
+        await wnAlert('Debes iniciar sesión para acceder al panel de administración.', { title: 'Inicia sesión' });
         window.location.href = '../pages/sign in.html'; // Cambia la ruta si tu login está en otra carpeta
         return;
     }
@@ -84,22 +84,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('¡Artículo publicado con éxito!');
+                    wnToast('¡Artículo publicado con éxito!');
                     editorPage.innerHTML = '<h1>Article Title Here...</h1><p>Start writing your article here...</p>'; // Limpiar editor
                     fetchAdminArticles(); // Actualizar la lista en el panel
                 } else {
-                    alert('No se pudo publicar el artículo: ' + (result.error || 'Error desconocido'));
+                    await wnAlert('No se pudo publicar el artículo: ' + (result.error || 'Error desconocido'), { title: 'Error al publicar', danger: true });
                 }
             } catch (error) {
                 console.error('Error al enviar:', error);
-                alert('Error de conexión con el servidor.');
+                await wnAlert('Error de conexión con el servidor.', { title: 'Error de conexión', danger: true });
             }
         });
     }
 
     // 4. Función global para eliminar un artículo
     window.deleteArticle = async function(id) {
-        if (!confirm('¿Estás seguro de eliminar este artículo?')) return;
+        if (!(await wnConfirm('¿Estás seguro de eliminar este artículo? Esta acción no se puede deshacer.', { title: 'Eliminar artículo', okText: 'Eliminar', cancelText: 'Cancelar', danger: true }))) return;
 
         try {
             const response = await fetch(`${API_URL}/${id}`, {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 fetchAdminArticles(); // Actualizar la lista
             } else {
-                alert('No se pudo eliminar el registro');
+                await wnAlert('No se pudo eliminar el registro', { title: 'Error al eliminar', danger: true });
             }
         } catch (error) {
             console.error('Error al eliminar:', error);
@@ -119,18 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Funcionalidad avanzada para los botones de formato (incluyendo Links e Imágenes)
     const toolButtons = document.querySelectorAll('.tool-btn[data-command]');
     toolButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const command = button.getAttribute('data-command');
 
-            if (command === 'createLink') {
-                const url = prompt('Ingresa la URL del enlace:');
-                if (url) {
-                    document.execCommand(command, false, url);
-                }
-            } else if (command === 'insertImage') {
-                const imageUrl = prompt('Ingresa la URL o ruta de la imagen:');
-                if (imageUrl) {
-                    document.execCommand(command, false, imageUrl);
+            if (command === 'createLink' || command === 'insertImage') {
+                // Guardar la selección del editor mientras la ventana está abierta
+                const selection = window.getSelection();
+                const range = selection.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+                const value = command === 'createLink'
+                    ? await wnPrompt('Ingresa la URL del enlace:', { title: 'Insertar enlace', placeholder: 'https://...', okText: 'Insertar', cancelText: 'Cancelar' })
+                    : await wnPrompt('Ingresa la URL o ruta de la imagen:', { title: 'Insertar imagen', placeholder: '../imagenes/foto.jpg', okText: 'Insertar', cancelText: 'Cancelar' });
+                if (value && value.trim()) {
+                    if (editorPage) editorPage.focus();
+                    if (range) { selection.removeAllRanges(); selection.addRange(range); }
+                    document.execCommand(command, false, value.trim());
                 }
             } else {
                 document.execCommand(command, false, null);

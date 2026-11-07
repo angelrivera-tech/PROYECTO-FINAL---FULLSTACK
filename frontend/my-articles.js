@@ -113,7 +113,8 @@
     async function deleteArticle(id, button) {
         const article = myArticles.find(a => a.id === id);
         if (!article) return;
-        if (!confirm(`Delete "${article.title}"? This cannot be undone.`)) return;
+        const ok = await wnConfirm(`Delete "${article.title}"? This cannot be undone.`, { title: 'Delete article', okText: 'Delete', danger: true });
+        if (!ok) return;
 
         button.disabled = true;
         try {
@@ -122,15 +123,16 @@
             });
             const result = await response.json().catch(() => ({}));
             if (!response.ok) {
-                alert(result.error || 'The article could not be deleted.');
+                await wnAlert(result.error || 'The article could not be deleted.', { title: 'Something went wrong', danger: true });
                 button.disabled = false;
                 return;
             }
             myArticles = myArticles.filter(a => a.id !== id);
             renderMyArticles();
+            wnToast('Article deleted');
         } catch (error) {
             console.error('Error al eliminar:', error);
-            alert('Could not connect to the server.');
+            await wnAlert('Could not connect to the server.', { title: 'Connection error', danger: true });
             button.disabled = false;
         }
     }
@@ -160,15 +162,21 @@
 
     // Botones de formato del editor
     document.querySelectorAll('.edit-tool-btn[data-command]').forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const command = button.getAttribute('data-command');
             editContent.focus();
-            if (command === 'createLink') {
-                const url = prompt('Enter the link URL:');
-                if (url) document.execCommand(command, false, url);
-            } else if (command === 'insertImage') {
-                const imageUrl = prompt('Enter the image URL or path:');
-                if (imageUrl) document.execCommand(command, false, imageUrl);
+            if (command === 'createLink' || command === 'insertImage') {
+                // Guardar la selección del editor mientras la ventana está abierta
+                const selection = window.getSelection();
+                const range = selection.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+                const value = command === 'createLink'
+                    ? await wnPrompt('Enter the link URL:', { title: 'Insert link', placeholder: 'https://...', okText: 'Insert' })
+                    : await wnPrompt('Enter the image URL or path:', { title: 'Insert photo', placeholder: '../imagenes/photo.jpg', okText: 'Insert' });
+                if (value && value.trim()) {
+                    editContent.focus();
+                    if (range) { selection.removeAllRanges(); selection.addRange(range); }
+                    document.execCommand(command, false, value.trim());
+                }
             } else {
                 document.execCommand(command, false, null);
             }

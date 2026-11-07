@@ -47,10 +47,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div style="font-size: 1.1rem; line-height: 1.6; color: #333;">
                 ${fixedContent}
             </div>
-            <div style="margin-top: 40px;">
+            <div id="article-actions" style="margin-top: 40px; display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap;">
                 <a href="index.html" style="text-decoration: none; background: #333; color: white; padding: 10px 20px; border-radius: 5px;">&larr; Volver al inicio</a>
             </div>
         `;
+
+        if (window.wnPins) {
+            await wnPins.load();
+            document.getElementById('article-actions').appendChild(wnPins.button(article.id));
+        }
 
     } catch (error) {
         console.error('Error:', error);

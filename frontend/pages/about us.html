@@ -73,18 +73,20 @@
         }
 
         // Función para verificar autenticación antes de entrar a páginas protegidas
-        function checkAuth(event, destinationUrl) {
+        async function checkAuth(event, destinationUrl) {
             event.preventDefault();
             const usuarioLogueado = localStorage.getItem('usuarioActivo');
 
             if (!usuarioLogueado) {
-                alert('Debes iniciar sesión para acceder a esta sección.');
+                await wnAlert('Debes iniciar sesión para acceder a esta sección.', { title: 'Inicia sesión' });
                 window.location.href = '../pages/log in.html';
             } else {
                 window.location.href = destinationUrl;
             }
         }
     </script>
+    <script src="../dialogs.js"></script>
+    <script src="../pins.js"></script>
     <script src="../main.js"></script>
 </body>
 </html>

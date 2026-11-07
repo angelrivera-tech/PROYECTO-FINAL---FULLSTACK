@@ -131,17 +131,9 @@
             overlay.classList.toggle('active');
         }
 
-        // Eliminar tarjeta guardada de la pantalla
-        function removeSavedArticle(button) {
-            const card = button.closest('.saved-card');
-            card.remove();
-
-            const remainingArticles = document.querySelectorAll('#articles-container .saved-card');
-            if (remainingArticles.length === 0) {
-                document.getElementById('noArticlesMsg').style.display = 'block';
-            }
-        }
     </script>
+    <script src="../dialogs.js"></script>
+    <script src="../saved-articles.js"></script>
     <script src="../my-articles.js"></script>
 </body>
 </html>

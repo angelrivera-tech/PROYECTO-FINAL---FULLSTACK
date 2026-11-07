@@ -44,6 +44,7 @@
         <h2>All rights reserved to Worldnews &copy;</h2>   
     </footer>
 
+    <script src="../dialogs.js"></script>
     <script>
         let temporaryUserId = null;
 
@@ -53,7 +54,7 @@
             const password = document.getElementById('password').value;
 
             if (!username || !password) {
-                alert('Por favor ingresa tu usuario y contraseña primero.');
+                await wnAlert('Por favor ingresa tu usuario y contraseña primero.', { title: 'Faltan datos' });
                 return;
             }
 
@@ -67,13 +68,13 @@
 
                 if (response.ok && data.requires2FA) {
                     temporaryUserId = data.userId;
-                    alert(data.message);
+                    await wnAlert(data.message, { title: 'Código enviado' });
                 } else {
-                    alert(data.error || 'Usuario o contraseña incorrectos');
+                    await wnAlert(data.error || 'Usuario o contraseña incorrectos', { title: 'No se pudo iniciar sesión', danger: true });
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('No se pudo conectar con el servidor backend.');
+                await wnAlert('No se pudo conectar con el servidor backend.', { title: 'Error de conexión', danger: true });
             }
         });
 
@@ -82,12 +83,12 @@
             const code = document.getElementById('verificationCode').value;
 
             if (!temporaryUserId) {
-                alert('Primero debes solicitar el código haciendo clic en "Enviar Código 2FA".');
+                await wnAlert('Primero debes solicitar el código haciendo clic en "Enviar Código 2FA".', { title: 'Falta el código' });
                 return;
             }
 
             if (!code || code.length !== 6) {
-                alert('Por favor introduce un código válido de 6 dígitos.');
+                await wnAlert('Por favor introduce un código válido de 6 dígitos.', { title: 'Código inválido' });
                 return;
             }
 
@@ -104,14 +105,14 @@
                     localStorage.setItem('usuarioActivo', data.username);
                     localStorage.setItem('usuarioId', data.userId);
 
-                    alert('¡Login exitoso! Bienvenido, ' + data.username);
+                    await wnAlert('¡Login exitoso! Bienvenido, ' + data.username, { title: 'Bienvenido' });
                     window.location.href = '../pages/index.html'; 
                 } else {
-                    alert(data.error || 'Código incorrecto o expirado');
+                    await wnAlert(data.error || 'Código incorrecto o expirado', { title: 'Código incorrecto', danger: true });
                 }
             } catch (err) {
                 console.error('Error:', err);
-                alert('Error al verificar el código con el servidor.');
+                await wnAlert('Error al verificar el código con el servidor.', { title: 'Error de conexión', danger: true });
             }
         });
     </script>
