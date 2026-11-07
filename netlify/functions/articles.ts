@@ -61,6 +61,15 @@ export default async (req: Request, context: Context) => {
 
     if (req.method === "DELETE") {
       try {
+        // Si se envía usuario_id (desde "My Saved News"), solo el autor puede borrar
+        const usuarioParam = new URL(req.url).searchParams.get("usuario_id");
+        if (usuarioParam !== null) {
+          const [existing] = await db.select().from(articulos).where(eq(articulos.id, id));
+          if (!existing) return Response.json({ error: "Artículo no encontrado" }, { status: 404 });
+          if (existing.usuarioId === null || existing.usuarioId !== Number(usuarioParam)) {
+            return Response.json({ error: "Solo el autor puede eliminar este artículo" }, { status: 403 });
+          }
+        }
         await db.delete(articulos).where(eq(articulos.id, id));
         return Response.json({ message: "Artículo eliminado con éxito" });
       } catch (err) {
