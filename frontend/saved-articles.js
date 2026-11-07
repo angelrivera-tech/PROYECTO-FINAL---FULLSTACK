@@ -34,7 +34,12 @@
             showEmpty('You have no saved articles yet. Use "📌 Save for later" on any article to pin it here.');
             return;
         }
-        emptyMsg.style.display = 'none';
+        if (usuarioId) {
+            emptyMsg.style.display = 'none';
+        } else {
+            emptyMsg.textContent = 'These pins are saved in this browser. Log in to keep them in your account.';
+            emptyMsg.style.display = 'block';
+        }
         container.innerHTML = '';
 
         saved.forEach(article => {
@@ -92,6 +97,14 @@
         });
         if (!ok) return;
 
+        if (!usuarioId) {
+            window.wnPins.removeGuestPin(id);
+            saved = saved.filter(a => a.id !== id);
+            render();
+            wnToast('Removed from My Saved News');
+            return;
+        }
+
         unpinButton.disabled = true;
         try {
             const response = await fetch(`/api/saved/${id}?usuario_id=${encodeURIComponent(usuarioId)}`, { method: 'DELETE' });
@@ -111,17 +124,31 @@
         }
     });
 
+    // Visitantes sin sesión: los pins están en este navegador
+    async function loadGuestPins() {
+        const pins = window.wnPins ? window.wnPins.guestPins() : [];
+        if (pins.length === 0) return [];
+        const response = await fetch('/api/articles');
+        if (!response.ok) throw new Error('Error al conectar con el servidor');
+        const byId = new Map((await response.json()).map(a => [a.id, a]));
+        return pins
+            .filter(p => byId.has(p.id))
+            .map(p => ({ ...byId.get(p.id), fecha_guardado: p.fecha_guardado }));
+    }
+
     async function load() {
-        if (!usuarioId) {
-            showEmpty('Log in to see the articles you have saved to read later.');
-            return;
-        }
         emptyMsg.style.display = 'block';
         emptyMsg.textContent = 'Loading your saved articles...';
         try {
-            const response = await fetch(`/api/saved?usuario_id=${encodeURIComponent(usuarioId)}`);
-            if (!response.ok) throw new Error('Error al conectar con el servidor');
-            saved = await response.json();
+            if (usuarioId) {
+                // Pasa a la cuenta los pins hechos antes de iniciar sesión
+                if (window.wnPins) await window.wnPins.load();
+                const response = await fetch(`/api/saved?usuario_id=${encodeURIComponent(usuarioId)}`);
+                if (!response.ok) throw new Error('Error al conectar con el servidor');
+                saved = await response.json();
+            } else {
+                saved = await loadGuestPins();
+            }
             render();
         } catch (error) {
             console.error('Error al cargar guardados:', error);

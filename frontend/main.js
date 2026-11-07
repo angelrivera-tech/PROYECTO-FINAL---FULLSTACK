@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </h3>
                         <small class="article-date">Publicado: ${fecha}</small>
                         <p class="article-excerpt">${excerpt}</p>
-                        <div class="article-card-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div class="article-card-actions">
                             <a href="article.html?id=${article.id}" class="read-more-btn">Leer más &rarr;</a>
                         </div>
                     </div>
