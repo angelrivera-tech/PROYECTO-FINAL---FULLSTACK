@@ -357,3 +357,24 @@ footer h1, footer h2 {
 #single-article-container b {
     color: #1a1a1a;
 }
+
+/* Article body: show the content exactly as it was formatted in the editor.
+   The editor starts left-aligned, so the body must too (the page itself is
+   centered). Alignment set with the ⬅ ➡ ☰ buttons is saved inline on each
+   block and overrides this default. Images stay inline so that block
+   alignment moves them to the left, right or center like in the editor. */
+#single-article-container .article-body {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    text-align: left;
+}
+
+#single-article-container .article-body img {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 15px 0;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
