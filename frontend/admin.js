@@ -13,13 +13,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const publishBtn = document.querySelector('.submit-btn');
     const editorPage = document.querySelector('.word-page');
     const adminList = document.querySelector('.admin-list');
+    const usuarioId = Number(localStorage.getItem('usuarioId')) || null;
+
+    // Escapar texto para insertarlo de forma segura en el HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text == null ? '' : String(text);
+        return div.innerHTML;
+    }
 
     // 1. Función para obtener y mostrar los artículos en el panel de administración
     async function fetchAdminArticles() {
         if (!adminList) return;
-        
+        if (!usuarioId) {
+            adminList.innerHTML = '<li style="text-align: center; color: #888;">Inicia sesión para ver tus artículos.</li>';
+            return;
+        }
+
         try {
-            const response = await fetch(API_URL);
+            // Solo los artículos publicados por el usuario que inició sesión
+            const response = await fetch(`${API_URL}?usuario_id=${encodeURIComponent(usuarioId)}`);
             if (!response.ok) throw new Error('Error al conectar con el servidor');
             
             const articles = await response.json();
@@ -35,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         adminList.innerHTML = '';
 
         if (articles.length === 0) {
-            adminList.innerHTML = '<li style="text-align: center; color: #888;">No hay artículos publicados.</li>';
+            adminList.innerHTML = '<li style="text-align: center; color: #888;">Todavía no has publicado artículos.</li>';
             return;
         }
 
@@ -48,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             li.style.borderBottom = '1px solid #333';
 
             li.innerHTML = `
-                <span><strong>${article.title}</strong> (${article.category || 'General'})</span>
+                <span><strong>${escapeHtml(article.title)}</strong> (${escapeHtml(article.category || 'General')})</span>
                 <button onclick="deleteArticle(${article.id})" class="btn-delete" style="background-color: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Eliminar</button>
             `;
             adminList.appendChild(li);
@@ -64,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const category = "General"; 
             const image_url = "../imagenes/imagen2.jpg"; 
-            const usuario_id = Number(localStorage.getItem('usuarioId')) || null; // ID del usuario que inició sesión
+            const usuario_id = usuarioId; // ID del usuario que inició sesión
 
             try {
                 const response = await fetch(API_URL, {
@@ -102,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!(await wnConfirm('¿Estás seguro de eliminar este artículo? Esta acción no se puede deshacer.', { title: 'Eliminar artículo', okText: 'Eliminar', cancelText: 'Cancelar', danger: true }))) return;
 
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_URL}/${id}?usuario_id=${encodeURIComponent(usuarioId)}`, {
                 method: 'DELETE',
             });
 

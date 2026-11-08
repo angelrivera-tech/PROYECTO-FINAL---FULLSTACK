@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <span style="background: #eee; padding: 5px 10px; font-size: 0.9rem; border-radius: 4px;">${article.category || 'General'}</span>
             <small style="color: #666; display: block; margin: 15px 0 10px 0;">Publicado el: ${fecha}</small>
             <hr style="margin-bottom: 20px;">
-            <div style="font-size: 1.1rem; line-height: 1.6; color: #333;">
+            <div class="article-body">
                 ${fixedContent}
             </div>
             <div id="article-actions" style="margin-top: 40px; display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap;">
