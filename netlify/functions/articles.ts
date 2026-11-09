@@ -2,7 +2,9 @@ import type { Config, Context } from "@netlify/functions";
 import { desc, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { articulos, usuarios } from "../../db/schema.js";
-import { readJson, toArticleJson } from "../lib/shared.js";
+import { readJson, resolveArticleImage, toArticleJson } from "../lib/shared.js";
+
+const NO_IMAGE_ERROR = "El artículo necesita una imagen para mostrarse. Añade una imagen de portada antes de publicar.";
 
 export default async (req: Request, context: Context) => {
   const idParam = context.params.id;
@@ -41,12 +43,16 @@ export default async (req: Request, context: Context) => {
           return Response.json({ error: "Solo el autor puede editar este artículo" }, { status: 403 });
         }
 
+        // Un artículo publicado siempre debe tener una imagen que mostrar
+        const imageUrl = resolveArticleImage(image_url === undefined ? existing.imageUrl : image_url, content);
+        if (!imageUrl) return Response.json({ error: NO_IMAGE_ERROR }, { status: 400 });
+
         const [updated] = await db
           .update(articulos)
           .set({
             title,
             category: category || existing.category,
-            imageUrl: image_url === undefined ? existing.imageUrl : image_url || null,
+            imageUrl,
             content,
           })
           .where(eq(articulos.id, id))
@@ -109,6 +115,10 @@ export default async (req: Request, context: Context) => {
       return Response.json({ error: "El título y el contenido son obligatorios" }, { status: 400 });
     }
 
+    // No se puede publicar un artículo sin una imagen que mostrar
+    const imageUrl = resolveArticleImage(image_url, content);
+    if (!imageUrl) return Response.json({ error: NO_IMAGE_ERROR }, { status: 400 });
+
     try {
       // Solo enlazar el autor si el usuario existe realmente
       let usuarioId: number | null = null;
@@ -123,7 +133,7 @@ export default async (req: Request, context: Context) => {
         .values({
           title,
           category: category || "General",
-          imageUrl: image_url || null,
+          imageUrl,
           content,
           usuarioId,
         })

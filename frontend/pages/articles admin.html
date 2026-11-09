@@ -22,28 +22,101 @@
 
     <hr>
 
-    <h2>Write & Format Article</h2>
-    
+    <h2 id="editor-heading">Write & Format Article</h2>
+
     <div class="word-editor-container">
+        <!-- Detalles del artículo: categoría y portada -->
+        <div class="article-settings">
+            <div class="setting-field">
+                <label for="article-category">Category</label>
+                <select id="article-category">
+                    <option value="General" selected>General</option>
+                    <option value="World">World</option>
+                    <option value="Politics">Politics</option>
+                    <option value="Economy">Economy</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Science">Science</option>
+                    <option value="Health">Health</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Opinion">Opinion</option>
+                    <option value="__custom">Other (custom)…</option>
+                </select>
+                <input type="text" id="article-category-custom" maxlength="100" placeholder="Custom category" hidden>
+            </div>
+
+            <div class="setting-field cover-field">
+                <label for="cover-url">Cover image <span class="required-mark">* required</span></label>
+                <div class="cover-row">
+                    <input type="text" id="cover-url" placeholder="https://... or ../imagenes/foto.jpg">
+                    <button type="button" class="tool-btn" id="cover-upload-btn">⬆ Upload</button>
+                    <button type="button" class="tool-btn" id="cover-from-content-btn" title="Use the first image inside the article">Use article image</button>
+                    <input type="file" id="cover-file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+                </div>
+                <div class="cover-library" aria-label="Site images">
+                    <span class="cover-library-label">Or pick one:</span>
+                    <button type="button" class="library-thumb" data-src="../imagenes/imagen.webp"><img src="../imagenes/imagen.webp" alt=""></button>
+                    <button type="button" class="library-thumb" data-src="../imagenes/arton24981.jpg"><img src="../imagenes/arton24981.jpg" alt=""></button>
+                    <button type="button" class="library-thumb" data-src="../imagenes/maxresdefault.jpg"><img src="../imagenes/maxresdefault.jpg" alt=""></button>
+                    <button type="button" class="library-thumb" data-src="../imagenes/image3.avif"><img src="../imagenes/image3.avif" alt=""></button>
+                </div>
+                <div class="cover-preview" id="cover-preview">
+                    <img id="cover-preview-img" alt="Cover preview" hidden>
+                    <span id="cover-status" class="cover-status missing">No cover image yet — an image is required to publish.</span>
+                    <button type="button" class="tool-btn" id="cover-remove-btn" hidden>✕ Remove</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Barra de herramientas con comandos funcionales -->
         <div class="word-toolbar">
-            <button type="button" class="tool-btn" data-command="bold"><b>B</b></button>
-            <button type="button" class="tool-btn" data-command="italic"><i>I</i></button>
-            <button type="button" class="tool-btn" data-command="underline"><u>U</u></button>
+            <button type="button" class="tool-btn" data-command="undo" title="Undo">↶</button>
+            <button type="button" class="tool-btn" data-command="redo" title="Redo">↷</button>
             <div class="toolbar-divider"></div>
-            <select class="tool-select">
-                <option value="H1">Heading 1</option>
+            <button type="button" class="tool-btn" data-command="bold" title="Bold"><b>B</b></button>
+            <button type="button" class="tool-btn" data-command="italic" title="Italic"><i>I</i></button>
+            <button type="button" class="tool-btn" data-command="underline" title="Underline"><u>U</u></button>
+            <button type="button" class="tool-btn" data-command="strikeThrough" title="Strikethrough"><s>S</s></button>
+            <button type="button" class="tool-btn" data-command="superscript" title="Superscript">x²</button>
+            <button type="button" class="tool-btn" data-command="subscript" title="Subscript">x₂</button>
+            <div class="toolbar-divider"></div>
+            <select class="tool-select" id="block-format" title="Text style">
+                <option value="H1">Heading 1 (title)</option>
                 <option value="H2">Heading 2</option>
+                <option value="H3">Heading 3</option>
                 <option value="P" selected>Paragraph</option>
+                <option value="BLOCKQUOTE">Quote</option>
+                <option value="PRE">Code block</option>
             </select>
+            <select class="tool-select" id="font-size" title="Text size">
+                <option value="">Size</option>
+                <option value="2">Small</option>
+                <option value="3">Normal</option>
+                <option value="4">Large</option>
+                <option value="5">Larger</option>
+                <option value="6">Huge</option>
+            </select>
+            <label class="color-tool" title="Text color">A<input type="color" id="text-color" value="#d9534f"></label>
+            <label class="color-tool highlight" title="Highlight">🖍<input type="color" id="highlight-color" value="#fff3a3"></label>
             <div class="toolbar-divider"></div>
-            <button type="button" class="tool-btn" data-command="justifyLeft">⬅</button>
-            <button type="button" class="tool-btn" data-command="justifyRight">➡</button>
-            <button type="button" class="tool-btn" data-command="justifyCenter">☰</button>
+            <button type="button" class="tool-btn" data-command="justifyLeft" title="Align left">⬅</button>
+            <button type="button" class="tool-btn" data-command="justifyCenter" title="Center">☰</button>
+            <button type="button" class="tool-btn" data-command="justifyRight" title="Align right">➡</button>
+            <button type="button" class="tool-btn" data-command="justifyFull" title="Justify">▤</button>
             <div class="toolbar-divider"></div>
-            <!-- Botones de imagen y enlace habilitados y con data-command -->
-            <button type="button" class="tool-btn" data-command="insertImage">📷 Add Photo</button>
-            <button type="button" class="tool-btn" data-command="createLink">🔗 Link</button>
+            <button type="button" class="tool-btn" data-command="insertUnorderedList" title="Bulleted list">• List</button>
+            <button type="button" class="tool-btn" data-command="insertOrderedList" title="Numbered list">1. List</button>
+            <button type="button" class="tool-btn" data-command="outdent" title="Decrease indent">⇤</button>
+            <button type="button" class="tool-btn" data-command="indent" title="Increase indent">⇥</button>
+            <div class="toolbar-divider"></div>
+            <button type="button" class="tool-btn" data-command="insertImage" title="Insert image from URL">📷 Add Photo</button>
+            <button type="button" class="tool-btn" id="inline-upload-btn" title="Upload an image into the article">⬆ Upload Photo</button>
+            <input type="file" id="inline-file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+            <button type="button" class="tool-btn" data-command="createLink" title="Insert link">🔗 Link</button>
+            <button type="button" class="tool-btn" data-command="unlink" title="Remove link">⛓ Unlink</button>
+            <button type="button" class="tool-btn" data-command="insertHorizontalRule" title="Divider line">― Line</button>
+            <button type="button" class="tool-btn" data-command="removeFormat" title="Clear formatting">⌫ Clear format</button>
         </div>
 
         <!-- Área de escritura tipo Word -->
@@ -52,14 +125,34 @@
             <p>Start writing your article here just like in Microsoft Word...</p>
         </div>
 
+        <div class="editor-status">
+            <span id="word-count">0 words</span>
+            <span id="draft-status"></span>
+        </div>
+
         <div class="editor-actions">
-            <button type="button" class="submit-btn">Publish Article</button>
+            <button type="button" class="secondary-btn" id="clear-btn">New / Clear</button>
+            <button type="button" class="secondary-btn" id="cancel-edit-btn" hidden>Cancel editing</button>
+            <button type="button" class="secondary-btn" id="preview-btn">👁 Preview</button>
+            <button type="button" class="submit-btn" title="Add a cover image to publish">Publish Article</button>
+        </div>
+        <p class="publish-hint" id="publish-hint">Add a cover image to enable publishing.</p>
+    </div>
+
+    <!-- Vista previa del artículo -->
+    <div class="preview-backdrop" id="preview-modal" hidden>
+        <div class="preview-dialog">
+            <div class="preview-head">
+                <strong>Preview</strong>
+                <button type="button" class="tool-btn" id="preview-close">✕ Close</button>
+            </div>
+            <div class="preview-body" id="preview-body"></div>
         </div>
     </div>
 
     <hr>
 
-    <h2>Existing Articles (Read & Delete)</h2>
+    <h2>Your Published Articles</h2>
     <div class="articles-list-container">
         <ul class="admin-list">
             <!-- Los artículos se cargarán dinámicamente desde el backend -->

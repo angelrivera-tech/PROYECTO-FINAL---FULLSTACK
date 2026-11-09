@@ -36,7 +36,7 @@
     // Ajusta rutas de imágenes relativas igual que en la portada
     function fixImagePath(src) {
         if (!src) return '../imagenes/imagen2.jpg';
-        if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../')) return src;
+        if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../') || src.startsWith('/')) return src;
         return '../imagenes/' + src.split('/').pop();
     }
 
@@ -72,7 +72,7 @@
             const temp = document.createElement('div');
             temp.innerHTML = article.content || '';
             const firstImg = temp.querySelector('img');
-            const imgUrl = fixImagePath(firstImg ? firstImg.getAttribute('src') : article.image_url);
+            const imgUrl = fixImagePath(firstImg && !(article.image_url && !article.image_url.endsWith('imagenes/imagen2.jpg')) ? firstImg.getAttribute('src') : article.image_url);
             // Quitar el título (h1) del extracto
             const heading = temp.querySelector('h1');
             if (heading) heading.remove();
@@ -200,6 +200,12 @@
 
         if (!title || !editContent.innerText.trim()) {
             editError.textContent = 'The article needs a title (first heading) and some content.';
+            return;
+        }
+
+        // Un artículo publicado siempre necesita una imagen que mostrar
+        if (!editImage.value.trim() && !editContent.querySelector('img[src]')) {
+            editError.textContent = 'The article needs an image to display. Add a cover image URL before saving.';
             return;
         }
 
