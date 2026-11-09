@@ -18,7 +18,8 @@
     }
 
     function fixImagePath(src) {
-        if (!src) return '../imagenes/imagen2.jpg';
+        // Sin imagen (o la antigua imagen por defecto, ya eliminada): fondo gris neutro
+        if (!src || src.endsWith('imagenes/imagen2.jpg')) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250'%3E%3Crect width='100%25' height='100%25' fill='%23e5e5e5'/%3E%3C/svg%3E";
         if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../') || src.startsWith('/')) return src;
         return '../imagenes/' + src.split('/').pop();
     }

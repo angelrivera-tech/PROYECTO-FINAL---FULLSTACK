@@ -91,9 +91,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const fromContent = cover ? '' : firstContentImage();
         const candidate = cover || fromContent;
 
-        document.querySelectorAll('.library-thumb').forEach(btn => {
-            btn.classList.toggle('selected', !!cover && btn.dataset.src === cover);
-        });
         coverRemoveBtn.hidden = !coverInput.value.trim();
 
         if (!candidate) {
@@ -328,7 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // No se puede publicar sin una imagen que mostrar
         await validateImage();
         if (!imageReady || !effectiveImage) {
-            await wnAlert('El artículo necesita una imagen para mostrarse. Añade una imagen de portada (URL, subida o de la galería) antes de publicar.', { title: 'Falta la imagen', danger: true });
+            await wnAlert('El artículo necesita una imagen para mostrarse. Añade una imagen de portada (URL o subida) antes de publicar.', { title: 'Falta la imagen', danger: true });
             return;
         }
 
@@ -516,13 +513,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveDraft();
     });
 
-    document.querySelectorAll('.library-thumb').forEach(btn => {
-        btn.addEventListener('click', () => {
-            coverInput.value = btn.dataset.src;
-            validateImage();
-            saveDraft();
-        });
-    });
 
     coverRemoveBtn.addEventListener('click', () => {
         coverInput.value = '';
