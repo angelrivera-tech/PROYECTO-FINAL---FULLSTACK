@@ -608,3 +608,130 @@ footer h1, footer h2 {
     gap: 10px;
     margin-top: 10px;
 }
+
+/* --- Edit modal: same options as the Article Editor --- */
+.edit-modal { width: min(860px, 94vw); }
+.edit-settings {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+.edit-field { display: flex; flex-direction: column; min-width: 0; }
+.edit-field .edit-input { width: 100%; box-sizing: border-box; }
+#editCategoryCustom { margin-top: 8px; }
+.edit-required { color: #d9534f; font-size: 0.75rem; font-weight: 600; }
+.edit-cover-row { display: flex; gap: 6px; }
+.edit-cover-row .edit-input { flex: 1; min-width: 0; }
+.edit-cover-row .edit-tool-btn { white-space: nowrap; }
+.edit-cover-library { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.edit-cover-library-label { font-size: 0.85rem; color: #666666; }
+.edit-library-thumb {
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    width: 54px;
+    height: 36px;
+    overflow: hidden;
+}
+.edit-library-thumb img { width: 100%; height: 100%; max-width: none; margin: 0; border-radius: 0; box-shadow: none; object-fit: cover; display: block; }
+.edit-library-thumb:hover, .edit-library-thumb.selected { border-color: #0275d8; }
+.edit-cover-preview { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+#editCoverPreviewImg {
+    margin: 0;
+    max-width: none;
+    width: 160px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+#editCoverPreviewImg[hidden], .edit-modal [hidden] { display: none; }
+.edit-cover-status { font-size: 0.9rem; font-weight: 600; }
+.edit-cover-status.missing { color: #d9534f; }
+.edit-cover-status.loading { color: #888888; }
+.edit-cover-status.ok { color: #2e7d32; }
+
+.edit-toolbar { align-items: center; }
+.edit-toolbar-divider { width: 1px; height: 22px; background: #cccccc; margin: 0 2px; }
+.edit-tool-select {
+    padding: 4px;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    background: #ffffff;
+}
+.edit-color-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.edit-color-tool input[type="color"] { width: 22px; height: 22px; padding: 0; border: none; background: none; cursor: pointer; }
+
+.edit-content blockquote {
+    border-left: 4px solid #0275d8;
+    margin: 12px 0;
+    padding: 6px 16px;
+    color: #555555;
+    font-style: italic;
+    background: #f5f8fc;
+}
+.edit-content pre {
+    background: #1b1b1b;
+    color: #f1f1f1;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+.edit-status-bar { font-size: 0.85rem; color: #666666; margin-top: 6px; }
+.save-btn:disabled[title] { cursor: not-allowed; }
+.edit-save-hint { text-align: right; color: #d9534f; font-size: 0.85rem; margin: 8px 0 0 0; }
+
+.edit-preview-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    overflow-y: auto;
+    z-index: 1200;
+}
+.edit-preview-backdrop[hidden] { display: none; }
+.edit-preview-dialog {
+    background: #ffffff;
+    max-width: 800px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+    text-align: left;
+    color: #222222;
+}
+.edit-preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111111;
+    color: #ffffff;
+    padding: 12px 18px;
+}
+.edit-preview-body { padding: 24px 32px; }
+.edit-preview-body img { width: auto; max-width: 100%; height: auto; margin: 12px 0; object-fit: contain; }
+.edit-preview-body .edit-preview-cover { width: 100%; height: auto; max-height: 380px; margin: 0 0 16px 0; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 16px; }
+.edit-preview-body .edit-preview-category { background: #eeeeee; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; }
+
+@media (max-width: 640px) {
+    .edit-settings { grid-template-columns: 1fr; }
+    .edit-cover-row { flex-wrap: wrap; }
+}
