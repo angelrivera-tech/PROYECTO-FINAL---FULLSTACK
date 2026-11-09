@@ -35,7 +35,8 @@
 
     // Ajusta rutas de imágenes relativas igual que en la portada
     function fixImagePath(src) {
-        if (!src) return '../imagenes/imagen2.jpg';
+        // Sin imagen (o la antigua imagen por defecto, ya eliminada): fondo gris neutro
+        if (!src || src.endsWith('imagenes/imagen2.jpg')) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250'%3E%3Crect width='100%25' height='100%25' fill='%23e5e5e5'/%3E%3C/svg%3E";
         if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../') || src.startsWith('/')) return src;
         return '../imagenes/' + src.split('/').pop();
     }
@@ -202,9 +203,6 @@
         const cover = resolveSrc(editImage.value);
         const candidate = cover || firstContentImage();
 
-        document.querySelectorAll('.edit-library-thumb').forEach(btn => {
-            btn.classList.toggle('selected', !!cover && btn.dataset.src === cover);
-        });
         coverRemoveBtn.hidden = !editImage.value.trim();
 
         if (!candidate) {
@@ -413,12 +411,6 @@
         validateImage();
     });
 
-    document.querySelectorAll('.edit-library-thumb').forEach(btn => {
-        btn.addEventListener('click', () => {
-            editImage.value = btn.dataset.src;
-            validateImage();
-        });
-    });
 
     coverRemoveBtn.addEventListener('click', () => {
         editImage.value = '';
@@ -471,7 +463,7 @@
         // Un artículo publicado siempre necesita una imagen que se pueda mostrar
         await validateImage();
         if (!imageReady || !effectiveImage) {
-            editError.textContent = 'The article needs an image to display. Add a cover image (URL, upload or gallery) before saving.';
+            editError.textContent = 'The article needs an image to display. Add a cover image (URL or upload) before saving.';
             return;
         }
 

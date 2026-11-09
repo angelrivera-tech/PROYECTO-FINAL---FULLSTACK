@@ -624,20 +624,6 @@ footer h1, footer h2 {
 .edit-cover-row { display: flex; gap: 6px; }
 .edit-cover-row .edit-input { flex: 1; min-width: 0; }
 .edit-cover-row .edit-tool-btn { white-space: nowrap; }
-.edit-cover-library { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-.edit-cover-library-label { font-size: 0.85rem; color: #666666; }
-.edit-library-thumb {
-    padding: 0;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-    width: 54px;
-    height: 36px;
-    overflow: hidden;
-}
-.edit-library-thumb img { width: 100%; height: 100%; max-width: none; margin: 0; border-radius: 0; box-shadow: none; object-fit: cover; display: block; }
-.edit-library-thumb:hover, .edit-library-thumb.selected { border-color: #0275d8; }
 .edit-cover-preview { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
 #editCoverPreviewImg {
     margin: 0;

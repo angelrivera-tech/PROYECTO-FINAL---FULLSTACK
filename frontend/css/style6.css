@@ -300,30 +300,6 @@ footer h1, footer h2 {
 .cover-row input { flex: 1; min-width: 0; }
 .cover-row .tool-btn { white-space: nowrap; }
 
-.cover-library {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-}
-
-.cover-library-label { font-size: 0.85rem; color: #666; }
-
-.library-thumb {
-    padding: 0;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    background: none;
-    cursor: pointer;
-    width: 54px;
-    height: 36px;
-    overflow: hidden;
-}
-
-.library-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.library-thumb:hover, .library-thumb.selected { border-color: #0275d8; }
-
 .cover-preview {
     display: flex;
     align-items: center;

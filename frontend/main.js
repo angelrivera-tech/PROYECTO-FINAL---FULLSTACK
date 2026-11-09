@@ -28,7 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const fecha = article.fecha_publicacion ? new Date(article.fecha_publicacion).toLocaleDateString() : '';
 
-            let imgUrl = article.image_url || '../imagenes/imagen2.jpg';
+            // Fondo gris neutro si el artículo no tiene ninguna imagen
+            const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250'%3E%3Crect width='100%25' height='100%25' fill='%23e5e5e5'/%3E%3C/svg%3E";
+            let imgUrl = article.image_url && !article.image_url.endsWith('imagenes/imagen2.jpg') ? article.image_url : placeholder;
             
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = article.content || '';
