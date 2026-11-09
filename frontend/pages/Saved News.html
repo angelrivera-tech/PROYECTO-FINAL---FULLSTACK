@@ -74,30 +74,127 @@
     </div>
     </section>
 
-    <!-- Ventana para editar un artículo -->
+    <!-- Ventana para editar un artículo (mismas opciones que el Article Editor) -->
     <div id="editOverlay" class="edit-overlay" onclick="closeEditModal()"></div>
     <div id="editModal" class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
         <div class="edit-modal-header">
             <h3 id="editModalTitle">Edit Article</h3>
             <span class="close-btn" onclick="closeEditModal()">&times;</span>
         </div>
-        <label class="edit-label" for="editCategory">Category</label>
-        <input type="text" id="editCategory" class="edit-input" placeholder="General">
-        <label class="edit-label" for="editImage">Cover image URL (optional)</label>
-        <input type="text" id="editImage" class="edit-input" placeholder="../imagenes/imagen2.jpg">
+
+        <div class="edit-settings">
+            <div class="edit-field">
+                <label class="edit-label" for="editCategory">Category</label>
+                <select id="editCategory" class="edit-input">
+                    <option value="General">General</option>
+                    <option value="World">World</option>
+                    <option value="Politics">Politics</option>
+                    <option value="Economy">Economy</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Science">Science</option>
+                    <option value="Health">Health</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Opinion">Opinion</option>
+                    <option value="__custom">Other (custom)…</option>
+                </select>
+                <input type="text" id="editCategoryCustom" class="edit-input" maxlength="100" placeholder="Custom category" hidden>
+            </div>
+
+            <div class="edit-field">
+                <label class="edit-label" for="editImage">Cover image <span class="edit-required">* required</span></label>
+                <div class="edit-cover-row">
+                    <input type="text" id="editImage" class="edit-input" placeholder="https://... or ../imagenes/foto.jpg">
+                    <button type="button" class="edit-tool-btn" id="editCoverUploadBtn">⬆ Upload</button>
+                    <button type="button" class="edit-tool-btn" id="editCoverFromContentBtn" title="Use the first image inside the article">Use article image</button>
+                    <input type="file" id="editCoverFile" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+                </div>
+                <div class="edit-cover-library" aria-label="Site images">
+                    <span class="edit-cover-library-label">Or pick one:</span>
+                    <button type="button" class="edit-library-thumb" data-src="../imagenes/imagen.webp"><img src="../imagenes/imagen.webp" alt=""></button>
+                    <button type="button" class="edit-library-thumb" data-src="../imagenes/arton24981.jpg"><img src="../imagenes/arton24981.jpg" alt=""></button>
+                    <button type="button" class="edit-library-thumb" data-src="../imagenes/maxresdefault.jpg"><img src="../imagenes/maxresdefault.jpg" alt=""></button>
+                    <button type="button" class="edit-library-thumb" data-src="../imagenes/image3.avif"><img src="../imagenes/image3.avif" alt=""></button>
+                </div>
+                <div class="edit-cover-preview">
+                    <img id="editCoverPreviewImg" alt="Cover preview" hidden>
+                    <span id="editCoverStatus" class="edit-cover-status missing">No cover image yet — an image is required to save.</span>
+                    <button type="button" class="edit-tool-btn" id="editCoverRemoveBtn" hidden>✕ Remove</button>
+                </div>
+            </div>
+        </div>
+
         <label class="edit-label">Content (the first heading is the title)</label>
         <div class="edit-toolbar">
-            <button type="button" class="edit-tool-btn" data-command="bold"><b>B</b></button>
-            <button type="button" class="edit-tool-btn" data-command="italic"><i>I</i></button>
-            <button type="button" class="edit-tool-btn" data-command="underline"><u>U</u></button>
-            <button type="button" class="edit-tool-btn" data-command="insertImage">📷 Photo</button>
-            <button type="button" class="edit-tool-btn" data-command="createLink">🔗 Link</button>
+            <button type="button" class="edit-tool-btn" data-command="undo" title="Undo">↶</button>
+            <button type="button" class="edit-tool-btn" data-command="redo" title="Redo">↷</button>
+            <span class="edit-toolbar-divider"></span>
+            <button type="button" class="edit-tool-btn" data-command="bold" title="Bold"><b>B</b></button>
+            <button type="button" class="edit-tool-btn" data-command="italic" title="Italic"><i>I</i></button>
+            <button type="button" class="edit-tool-btn" data-command="underline" title="Underline"><u>U</u></button>
+            <button type="button" class="edit-tool-btn" data-command="strikeThrough" title="Strikethrough"><s>S</s></button>
+            <button type="button" class="edit-tool-btn" data-command="superscript" title="Superscript">x²</button>
+            <button type="button" class="edit-tool-btn" data-command="subscript" title="Subscript">x₂</button>
+            <span class="edit-toolbar-divider"></span>
+            <select class="edit-tool-select" id="editBlockFormat" title="Text style">
+                <option value="H1">Heading 1 (title)</option>
+                <option value="H2">Heading 2</option>
+                <option value="H3">Heading 3</option>
+                <option value="P" selected>Paragraph</option>
+                <option value="BLOCKQUOTE">Quote</option>
+                <option value="PRE">Code block</option>
+            </select>
+            <select class="edit-tool-select" id="editFontSize" title="Text size">
+                <option value="">Size</option>
+                <option value="2">Small</option>
+                <option value="3">Normal</option>
+                <option value="4">Large</option>
+                <option value="5">Larger</option>
+                <option value="6">Huge</option>
+            </select>
+            <label class="edit-color-tool" title="Text color">A<input type="color" id="editTextColor" value="#d9534f"></label>
+            <label class="edit-color-tool" title="Highlight">🖍<input type="color" id="editHighlightColor" value="#fff3a3"></label>
+            <span class="edit-toolbar-divider"></span>
+            <button type="button" class="edit-tool-btn" data-command="justifyLeft" title="Align left">⬅</button>
+            <button type="button" class="edit-tool-btn" data-command="justifyCenter" title="Center">☰</button>
+            <button type="button" class="edit-tool-btn" data-command="justifyRight" title="Align right">➡</button>
+            <button type="button" class="edit-tool-btn" data-command="justifyFull" title="Justify">▤</button>
+            <span class="edit-toolbar-divider"></span>
+            <button type="button" class="edit-tool-btn" data-command="insertUnorderedList" title="Bulleted list">• List</button>
+            <button type="button" class="edit-tool-btn" data-command="insertOrderedList" title="Numbered list">1. List</button>
+            <button type="button" class="edit-tool-btn" data-command="outdent" title="Decrease indent">⇤</button>
+            <button type="button" class="edit-tool-btn" data-command="indent" title="Increase indent">⇥</button>
+            <span class="edit-toolbar-divider"></span>
+            <button type="button" class="edit-tool-btn" data-command="insertImage" title="Insert image from URL">📷 Photo</button>
+            <button type="button" class="edit-tool-btn" id="editInlineUploadBtn" title="Upload an image into the article">⬆ Upload Photo</button>
+            <input type="file" id="editInlineFile" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+            <button type="button" class="edit-tool-btn" data-command="createLink" title="Insert link">🔗 Link</button>
+            <button type="button" class="edit-tool-btn" data-command="unlink" title="Remove link">⛓ Unlink</button>
+            <button type="button" class="edit-tool-btn" data-command="insertHorizontalRule" title="Divider line">― Line</button>
+            <button type="button" class="edit-tool-btn" data-command="removeFormat" title="Clear formatting">⌫ Clear format</button>
         </div>
         <div id="editContent" class="edit-content" contenteditable="true"></div>
+        <div class="edit-status-bar">
+            <span id="editWordCount">0 words</span>
+        </div>
         <p id="editError" class="edit-error"></p>
         <div class="edit-actions">
             <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+            <button type="button" id="editPreviewBtn" class="cancel-btn">👁 Preview</button>
             <button type="button" id="saveEditBtn" class="save-btn">Save Changes</button>
+        </div>
+        <p id="editSaveHint" class="edit-save-hint">Add an image that loads to enable saving.</p>
+    </div>
+
+    <!-- Vista previa del artículo editado -->
+    <div class="edit-preview-backdrop" id="editPreviewModal" hidden>
+        <div class="edit-preview-dialog">
+            <div class="edit-preview-head">
+                <strong>Preview</strong>
+                <button type="button" class="edit-tool-btn" id="editPreviewClose">✕ Close</button>
+            </div>
+            <div class="edit-preview-body" id="editPreviewBody"></div>
         </div>
     </div>
 
