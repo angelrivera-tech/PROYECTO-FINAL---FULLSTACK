@@ -33,7 +33,7 @@
             <a href="../pages/profile settings.html">Profile Settings</a>
             <a href="../pages/Saved News.html">My Saved News 📌</a>
             <hr>
-            <a href="../pages/log in.html" style="color: #d9534f;">Log Out</a>
+            <a href="#" onclick="cerrarSesion(event)" style="color: #d9534f;">Log Out</a>
         </div>
     </div>
     
@@ -228,6 +228,26 @@
             
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+        }
+
+        // Ocultar "sign in" y "log in" de la barra de navegación si hay sesión activa
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('usuarioActivo')) return;
+            document.querySelectorAll('.header-links a').forEach(link => {
+                const text = link.textContent.toLowerCase();
+                if (text.includes('sign in') || text.includes('log in') || text.includes('login')) {
+                    link.style.display = 'none';
+                }
+            });
+        });
+
+        // Cerrar sesión desde el menú lateral
+        async function cerrarSesion(event) {
+            event.preventDefault();
+            localStorage.removeItem('usuarioActivo');
+            localStorage.removeItem('usuarioId');
+            await wnAlert('Has cerrado sesión correctamente.', { title: 'Sesión cerrada' });
+            window.location.href = '../pages/index.html';
         }
 
     </script>
