@@ -19,7 +19,7 @@
 
     function fixImagePath(src) {
         if (!src) return '../imagenes/imagen2.jpg';
-        if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../')) return src;
+        if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('../') || src.startsWith('/')) return src;
         return '../imagenes/' + src.split('/').pop();
     }
 
@@ -46,7 +46,7 @@
             const temp = document.createElement('div');
             temp.innerHTML = article.content || '';
             const firstImg = temp.querySelector('img');
-            const imgUrl = fixImagePath(firstImg ? firstImg.getAttribute('src') : article.image_url);
+            const imgUrl = fixImagePath(firstImg && !(article.image_url && !article.image_url.endsWith('imagenes/imagen2.jpg')) ? firstImg.getAttribute('src') : article.image_url);
             const heading = temp.querySelector('h1');
             if (heading) heading.remove();
             const text = (temp.textContent || '').trim();

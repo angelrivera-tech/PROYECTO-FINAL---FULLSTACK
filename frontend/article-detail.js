@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const images = tempDiv.querySelectorAll('img');
         images.forEach(img => {
             const src = img.getAttribute('src');
-            if (src && !src.startsWith('http') && !src.startsWith('data:') && !src.startsWith('../')) {
+            if (src && !src.startsWith('http') && !src.startsWith('data:') && !src.startsWith('../') && !src.startsWith('/')) {
                 if (src.includes('imagenes/')) {
                     img.setAttribute('src', '../' + src.replace(/^\/+/, ''));
                 } else {
@@ -40,10 +40,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         fixedContent = tempDiv.innerHTML;
 
+        // Mostrar la portada elegida si no aparece ya dentro del contenido
+        let coverHtml = '';
+        const cover = article.image_url;
+        const isLegacyDefault = cover && cover.endsWith('imagenes/imagen2.jpg');
+        const coverInContent = cover && Array.from(tempDiv.querySelectorAll('img')).some(img => (img.getAttribute('src') || '').endsWith(cover.replace(/^(\.\.\/)+/, '')));
+        if (cover && !isLegacyDefault && !coverInContent) {
+            const safeCover = cover.replace(/"/g, '&quot;');
+            coverHtml = `<img src="${safeCover}" alt="Portada" class="article-cover" style="display:block; width:100%; max-height:420px; object-fit:cover; border-radius:8px; margin-bottom:20px;">`;
+        }
+
         container.innerHTML = `
             <span style="background: #eee; padding: 5px 10px; font-size: 0.9rem; border-radius: 4px;">${article.category || 'General'}</span>
             <small style="color: #666; display: block; margin: 15px 0 10px 0;">Publicado el: ${fecha}</small>
             <hr style="margin-bottom: 20px;">
+            ${coverHtml}
             <div class="article-body">
                 ${fixedContent}
             </div>

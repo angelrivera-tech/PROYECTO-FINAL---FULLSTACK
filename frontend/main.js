@@ -34,11 +34,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             tempDiv.innerHTML = article.content || '';
             const firstImg = tempDiv.querySelector('img');
             
-            if (firstImg) {
+            // La portada elegida tiene prioridad; los artículos antiguos (sin portada propia) usan su primera imagen
+            const hasOwnCover = article.image_url && !article.image_url.endsWith('imagenes/imagen2.jpg');
+            if (firstImg && !hasOwnCover) {
                 imgUrl = firstImg.getAttribute('src');
             }
 
-            if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:') && !imgUrl.startsWith('../')) {
+            if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:') && !imgUrl.startsWith('../') && !imgUrl.startsWith('/')) {
                 const fileName = imgUrl.split('/').pop();
                 imgUrl = '../imagenes/' + fileName;
             }
