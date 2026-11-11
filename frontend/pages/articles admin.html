@@ -160,6 +160,18 @@
     </footer>
 
     <!-- Enlace al archivo de JavaScript externo -->
+    <script>
+        // Ocultar "sign in" y "log in" de la barra de navegación si hay sesión activa
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('usuarioActivo')) return;
+            document.querySelectorAll('.navigation-links a').forEach(link => {
+                const text = link.textContent.toLowerCase();
+                if (text.includes('sign in') || text.includes('log in') || text.includes('login')) {
+                    link.style.display = 'none';
+                }
+            });
+        });
+    </script>
     <script src="../dialogs.js"></script>
     <script src="../admin.js"></script>
 </body>
