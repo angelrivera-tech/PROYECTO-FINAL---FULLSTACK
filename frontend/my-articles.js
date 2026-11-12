@@ -356,6 +356,13 @@
     });
 
     $('editBlockFormat').addEventListener('change', e => runCommand('formatBlock', e.target.value));
+    // Fuente del texto seleccionado
+    const editFontFamily = $('editFontFamily');
+    if (window.wnFonts) wnFonts.fillSelect(editFontFamily);
+    editFontFamily.addEventListener('change', e => {
+        if (e.target.value) runCommand('fontName', e.target.value);
+        e.target.value = '';
+    });
     $('editFontSize').addEventListener('change', e => {
         if (e.target.value) runCommand('fontSize', e.target.value);
         e.target.value = '';

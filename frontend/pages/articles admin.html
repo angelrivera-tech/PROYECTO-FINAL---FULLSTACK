@@ -28,6 +28,21 @@
         <!-- Detalles del artículo: categoría y portada -->
         <div class="article-settings">
             <div class="setting-field">
+                <label for="article-style">Article style</label>
+                <select id="article-style">
+                    <option value="normal" selected>Normal article</option>
+                    <option value="short">Short article (brief)</option>
+                    <option value="breaking">Breaking news</option>
+                    <option value="opinion">Opinion / column</option>
+                    <option value="interview">Interview (Q&amp;A)</option>
+                    <option value="list">List article (Top N)</option>
+                    <option value="photo">Photo story</option>
+                    <option value="feature">Long-form feature</option>
+                </select>
+                <small class="style-hint" id="article-style-hint"></small>
+            </div>
+
+            <div class="setting-field">
                 <label for="article-category">Category</label>
                 <select id="article-category">
                     <option value="General" selected>General</option>
@@ -82,6 +97,7 @@
                 <option value="BLOCKQUOTE">Quote</option>
                 <option value="PRE">Code block</option>
             </select>
+            <select class="tool-select" id="font-family" title="Font"></select>
             <select class="tool-select" id="font-size" title="Text size">
                 <option value="">Size</option>
                 <option value="2">Small</option>
@@ -173,6 +189,7 @@
         });
     </script>
     <script src="../dialogs.js"></script>
+    <script src="../fonts.js"></script>
     <script src="../admin.js"></script>
 </body>
 </html>

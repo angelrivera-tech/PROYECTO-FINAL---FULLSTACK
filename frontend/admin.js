@@ -134,10 +134,139 @@ document.addEventListener('DOMContentLoaded', async () => {
         categoryCustom.hidden = categorySelect.value !== '__custom';
     }
 
+    // --- Estilos de artículo: plantillas con una estructura y una extensión recomendada ---
+    const styleSelect = $('article-style');
+    const styleHint = $('article-style-hint');
+    const SERIF = "'Playfair Display', Georgia, serif";
+    const ARTICLE_STYLES = {
+        normal: {
+            hint: 'Headline, intro and sections. Aim for 400–1,200 words.',
+            min: 400, max: 1200,
+            template: (t) => `<h1>${t}</h1>
+<p><b>Write a one- or two-sentence introduction that sums up the story.</b></p>
+<p>Explain what happened, who is involved, where and when.</p>
+<h2>Background</h2>
+<p>Give readers the context they need to understand the story.</p>
+<h2>What happens next</h2>
+<p>Close with reactions, consequences or next steps.</p>`,
+        },
+        short: {
+            hint: 'A quick brief: headline and one or two paragraphs. Aim for 80–250 words.',
+            min: 80, max: 250,
+            template: (t) => `<h1>${t}</h1>
+<p><b>Summarize the news in one sentence.</b> Add the key details in a short paragraph.</p>`,
+        },
+        breaking: {
+            hint: 'Urgent news: label, key facts first, updates below. Aim for 100–400 words.',
+            min: 100, max: 400,
+            template: (t) => `<p><span style="background-color:#d9534f; color:#ffffff; font-weight:700; padding:3px 10px; border-radius:3px; letter-spacing:1px;">BREAKING NEWS</span></p>
+<h1>${t}</h1>
+<p><b>What we know so far: describe the event in one or two sentences.</b></p>
+<h3>Key facts</h3>
+<ul><li>Fact one</li><li>Fact two</li><li>Fact three</li></ul>
+<h3>Updates</h3>
+<p><i>[Time]</i> — Add new information here as the story develops.</p>`,
+        },
+        opinion: {
+            hint: 'Personal view with a byline and pull quote. Aim for 500–900 words.',
+            min: 500, max: 900,
+            template: (t) => `<p><span style="color:#d9534f; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Opinion</span></p>
+<h1><font face="${SERIF}">${t}</font></h1>
+<p><i>By Your Name</i></p>
+<p>Open with your main argument in a clear, direct way.</p>
+<blockquote><font face="${SERIF}" size="5"><i>“Put the strongest line of your argument here.”</i></font></blockquote>
+<p>Support your view with facts, examples and experience.</p>
+<p>Finish with a conclusion or a call to action.</p>`,
+        },
+        interview: {
+            hint: 'Short intro followed by questions and answers. Aim for 400–1,500 words.',
+            min: 400, max: 1500,
+            template: (t) => `<h1>${t}</h1>
+<p><i>Introduce the person you interviewed and why their voice matters.</i></p>
+<hr>
+<p><b>Q: Write your first question here?</b></p>
+<p>A: Write the answer here.</p>
+<p><b>Q: Write your second question here?</b></p>
+<p>A: Write the answer here.</p>
+<p><b>Q: Write your third question here?</b></p>
+<p>A: Write the answer here.</p>`,
+        },
+        list: {
+            hint: 'Numbered items with a short text each. Aim for 300–1,000 words.',
+            min: 300, max: 1000,
+            template: (t) => `<h1>${t}</h1>
+<p>Explain in a sentence or two what this list is about.</p>
+<h2>1. First item</h2>
+<p>Why it made the list.</p>
+<h2>2. Second item</h2>
+<p>Why it made the list.</p>
+<h2>3. Third item</h2>
+<p>Why it made the list.</p>`,
+        },
+        photo: {
+            hint: 'Images tell the story with short captions. Use “Upload Photo” to add pictures. Aim for 50–400 words.',
+            min: 50, max: 400,
+            template: (t) => `<h1>${t}</h1>
+<p>Set the scene in one short paragraph.</p>
+<p style="text-align:center;"><i>[Add a photo here with “📷 Add Photo” or “⬆ Upload Photo”]</i></p>
+<p style="text-align:center;"><font size="2" color="#666666">Caption: describe what the photo shows.</font></p>
+<p style="text-align:center;"><i>[Add a photo here]</i></p>
+<p style="text-align:center;"><font size="2" color="#666666">Caption: describe what the photo shows.</font></p>`,
+        },
+        feature: {
+            hint: 'In-depth story with drop cap, sections and pull quotes. Aim for 1,200–3,000 words.',
+            min: 1200, max: 3000,
+            template: (t) => `<h1><font face="${SERIF}">${t}</font></h1>
+<p><font size="4" color="#555555"><i>A subtitle that invites the reader into the story.</i></font></p>
+<hr>
+<p><span style="float:left; font-family:${SERIF.replace(/'/g, '&#39;')}; font-size:3.6em; line-height:0.8; font-weight:700; padding:6px 8px 0 0; color:#d9534f;">O</span>pen with a scene, a person or a moment that hooks the reader.</p>
+<h2>Chapter one</h2>
+<p>Develop the story with detail, voices and evidence.</p>
+<blockquote><font face="${SERIF}" size="5"><i>“A memorable quote from the story.”</i></font></blockquote>
+<h2>Chapter two</h2>
+<p>Continue the story.</p>
+<h2>Conclusion</h2>
+<p>Bring the story to a close.</p>`,
+        },
+    };
+
+    function currentStyle() {
+        return ARTICLE_STYLES[styleSelect.value] || ARTICLE_STYLES.normal;
+    }
+
+    function updateStyleHint() {
+        styleHint.textContent = currentStyle().hint;
+    }
+
+    // Aplicar la plantilla del estilo elegido (se conserva el título si ya se escribió uno)
+    async function applyArticleStyle() {
+        const style = currentStyle();
+        const titleEl = editorPage.querySelector('h1');
+        const currentTitle = titleEl ? titleEl.innerText.trim() : '';
+        const hasContent = editorPage.innerHTML.trim() !== DEFAULT_CONTENT && (editorPage.innerText || '').trim() !== '';
+        if (hasContent && !(await wnConfirm('Se cambiará la estructura del artículo por la plantilla de este estilo. El título se conserva, pero el resto del texto se reemplazará. ¿Continuar?', { title: 'Cambiar estilo', okText: 'Aplicar estilo', cancelText: 'Solo cambiar extensión' }))) {
+            // Mantener el texto actual: solo cambia la extensión recomendada
+            updateStyleHint();
+            updateWordCount();
+            saveDraft();
+            return;
+        }
+        const title = currentTitle && currentTitle !== PLACEHOLDER_TITLE ? escapeHtml(currentTitle) : PLACEHOLDER_TITLE;
+        editorPage.innerHTML = style.template(title).replace(/\n/g, '');
+        updateStyleHint();
+        editorPage.dispatchEvent(new Event('input'));
+    }
+
     function updateWordCount() {
         const words = (editorPage.innerText || '').trim().split(/\s+/).filter(Boolean).length;
         const minutes = Math.max(1, Math.round(words / 200));
-        wordCount.textContent = `${words} word${words === 1 ? '' : 's'} · ~${minutes} min read`;
+        const { min, max } = currentStyle();
+        let goal = ` · goal ${min.toLocaleString()}–${max.toLocaleString()}`;
+        wordCount.classList.remove('over-goal', 'under-goal', 'on-goal');
+        if (words > max) { wordCount.classList.add('over-goal'); goal += ' (too long)'; }
+        else if (words < min) wordCount.classList.add('under-goal');
+        else wordCount.classList.add('on-goal');
+        wordCount.textContent = `${words} word${words === 1 ? '' : 's'} · ~${minutes} min read${goal}`;
     }
 
     // --- Borrador automático (solo para artículos nuevos) ---
@@ -151,6 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     content: editorPage.innerHTML,
                     category: getCategory(),
                     cover: coverInput.value,
+                    style: styleSelect.value,
                 }));
                 draftStatus.textContent = 'Draft saved';
             } catch { /* almacenamiento lleno */ }
@@ -164,6 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (draft.content) editorPage.innerHTML = draft.content;
             setCategory(draft.category || 'General');
             coverInput.value = draft.cover || '';
+            if (draft.style && ARTICLE_STYLES[draft.style]) styleSelect.value = draft.style;
             draftStatus.textContent = 'Draft restored';
         } catch { /* borrador dañado */ }
     }
@@ -173,6 +304,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         editorPage.innerHTML = DEFAULT_CONTENT;
         setCategory('General');
         coverInput.value = '';
+        styleSelect.value = 'normal';
+        updateStyleHint();
         localStorage.removeItem(DRAFT_KEY);
         draftStatus.textContent = '';
         editorHeading.textContent = 'Write & Format Article';
@@ -283,6 +416,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         editorPage.innerHTML = article.content || DEFAULT_CONTENT;
         setCategory(article.category || 'General');
         coverInput.value = article.image_url || '';
+        styleSelect.value = 'normal';
+        updateStyleHint();
         editorHeading.textContent = 'Editing: ' + (article.title || '');
         publishBtn.textContent = 'Update Article';
         cancelEditBtn.hidden = false;
@@ -300,7 +435,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         editorPage.innerHTML = DEFAULT_CONTENT;
         setCategory('General');
         coverInput.value = '';
+        styleSelect.value = 'normal';
         loadDraft();
+        updateStyleHint();
         updateWordCount();
         validateImage();
     });
@@ -357,7 +494,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     editorPage.innerHTML = DEFAULT_CONTENT;
                     setCategory('General');
                     coverInput.value = '';
+                    styleSelect.value = 'normal';
                     loadDraft();
+                    updateStyleHint();
                     updateWordCount();
                     validateImage();
                 } else {
@@ -444,6 +583,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     $('block-format').addEventListener('change', (e) => {
         runCommand('formatBlock', e.target.value);
+    });
+
+    // Fuente del texto seleccionado
+    const fontFamilySelect = $('font-family');
+    if (window.wnFonts) wnFonts.fillSelect(fontFamilySelect);
+    fontFamilySelect.addEventListener('change', (e) => {
+        if (e.target.value) runCommand('fontName', e.target.value);
+        e.target.value = '';
     });
 
     $('font-size').addEventListener('change', (e) => {
@@ -556,8 +703,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     previewModal.addEventListener('click', (e) => { if (e.target === previewModal) previewModal.hidden = true; });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') previewModal.hidden = true; });
 
+    // Cambio de estilo del artículo
+    styleSelect.addEventListener('change', applyArticleStyle);
+
     // Estado inicial
     loadDraft();
+    updateStyleHint();
     updateWordCount();
     setPublishState();
     validateImage();
