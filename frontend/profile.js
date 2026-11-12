@@ -163,5 +163,50 @@
     emailBtn.addEventListener('click', () => requestChange('email', emailBtn));
     passwordBtn.addEventListener('click', () => requestChange('password', passwordBtn));
 
+    // Eliminar la cuenta: los artículos publicados se conservan en el sitio
+    const deleteBtn = document.getElementById('deleteAccountBtn');
+    deleteBtn.addEventListener('click', async () => {
+        const ok = await wnConfirm(
+            'Your account, profile picture and saved articles will be permanently deleted. The articles you published will stay on Worldnews. This cannot be undone.',
+            { title: 'Delete account', okText: 'Continue', danger: true }
+        );
+        if (!ok) return;
+
+        const password = await wnPrompt('Enter your password to confirm.', {
+            title: 'Confirm deletion',
+            okText: 'Delete account',
+            placeholder: 'Password',
+            inputType: 'password',
+            danger: true,
+        });
+        if (!password) return;
+
+        deleteBtn.disabled = true;
+        const originalText = deleteBtn.textContent;
+        deleteBtn.textContent = 'Deleting...';
+        try {
+            const response = await fetch(`/api/profile?usuario_id=${encodeURIComponent(usuarioId)}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password }),
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                await wnAlert(result.error || 'Your account could not be deleted.', { title: 'Something went wrong', danger: true });
+                return;
+            }
+            localStorage.removeItem('usuarioActivo');
+            localStorage.removeItem('usuarioId');
+            await wnAlert('Your account has been deleted. The articles you published are still available.', { title: 'Account deleted' });
+            window.location.href = '../pages/index.html';
+        } catch (error) {
+            console.error('Error al eliminar la cuenta:', error);
+            await wnAlert('Could not connect to the server.', { title: 'Connection error', danger: true });
+        } finally {
+            deleteBtn.disabled = false;
+            deleteBtn.textContent = originalText;
+        }
+    });
+
     load();
 })();

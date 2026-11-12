@@ -1,15 +1,18 @@
 import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
+import bcrypt from "bcryptjs";
 import { count, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { articulos, articulosGuardados, usuarios } from "../../db/schema.js";
 import { maskEmail } from "../lib/mailer.js";
+import { readJson } from "../lib/shared.js";
 
 // Perfil del usuario y foto de perfil
 //   GET    /api/profile?usuario_id=5                 -> datos del usuario
 //   GET    /api/profile/avatar/5                     -> imagen de perfil
 //   PUT    /api/profile/avatar?usuario_id=5  (image) -> subir / cambiar foto
 //   DELETE /api/profile/avatar?usuario_id=5          -> quitar foto
+//   DELETE /api/profile?usuario_id=5  { password }    -> eliminar la cuenta (los artículos publicados se conservan)
 
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -72,6 +75,29 @@ export default async (req: Request, context: Context) => {
         saved_count: Number(saved?.n ?? 0),
         avatar_url: avatarMeta ? `/api/profile/avatar/${usuarioId}?v=${encodeURIComponent(String(version ?? ""))}` : null,
       });
+    }
+
+    if (!isAvatar && req.method === "DELETE") {
+      // Se pide la contraseña para confirmar que es el dueño de la cuenta
+      const { password } = await readJson(req);
+      if (!password) {
+        return Response.json({ error: "Escribe tu contraseña para eliminar la cuenta" }, { status: 400 });
+      }
+      const [row] = await db
+        .select({ passwordHash: usuarios.passwordHash })
+        .from(usuarios)
+        .where(eq(usuarios.id, usuarioId));
+      if (!row || !(await bcrypt.compare(String(password), row.passwordHash))) {
+        return Response.json({ error: "Contraseña incorrecta" }, { status: 403 });
+      }
+
+      // Los artículos publicados se conservan: solo se desvinculan del autor.
+      // Los artículos guardados y los enlaces de la cuenta se borran en cascada.
+      await db.update(articulos).set({ usuarioId: null }).where(eq(articulos.usuarioId, usuarioId));
+      await db.delete(usuarios).where(eq(usuarios.id, usuarioId));
+      await avatars().delete(avatarKey(usuarioId)).catch((err) => console.error(err));
+
+      return Response.json({ message: "Cuenta eliminada" });
     }
 
     if (isAvatar && (req.method === "PUT" || req.method === "POST")) {

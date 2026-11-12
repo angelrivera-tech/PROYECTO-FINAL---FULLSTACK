@@ -223,3 +223,13 @@ a.profile-btn:not(header a):not(.sidebar-content a):hover {
 .sensitive-hint {
     margin: 4px 0 0 0;
 }
+
+/* Tarjeta para eliminar la cuenta */
+.danger-zone {
+    border-top: 4px solid #d9534f;
+}
+
+.danger-zone .remove-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
