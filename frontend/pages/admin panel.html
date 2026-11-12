@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Worldnews</title>
+    <link rel="stylesheet" href="../css/style6.css">
+    <link rel="stylesheet" href="../css/admin-panel.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Panel 🛡️</h1>
+    </header>
+
+    <div class="navigation-links">
+        <a href="../pages/index.html">home</a>
+        <a href="../pages/articles admin.html">manage articles</a>
+        <a href="../pages/profile settings.html">profile settings</a>
+        <a href="../pages/Saved News.html">my saved news</a>
+    </div>
+
+    <main class="ap-main">
+        <!-- Se muestra mientras se comprueba el acceso o si no hay permiso -->
+        <section id="ap-gate" class="ap-card ap-gate">
+            <p id="ap-gate-msg">Checking your access…</p>
+            <a id="ap-gate-login" class="ap-btn ap-btn-primary" href="../pages/log in.html" hidden>Log in again</a>
+        </section>
+
+        <div id="ap-content" hidden>
+            <div class="ap-stats">
+                <div class="ap-stat"><span id="ap-stat-articles">–</span><small>Articles</small></div>
+                <div class="ap-stat"><span id="ap-stat-users">–</span><small>Users</small></div>
+                <div class="ap-stat"><span id="ap-stat-agents">0</span><small>AI agents</small></div>
+            </div>
+
+            <nav class="ap-tabs" role="tablist">
+                <button class="ap-tab active" data-tab="articles" role="tab">📰 Articles</button>
+                <button class="ap-tab" data-tab="users" role="tab">👥 Users</button>
+                <button class="ap-tab" data-tab="agents" role="tab">🤖 AI Agents</button>
+            </nav>
+
+            <!-- ARTÍCULOS -->
+            <section class="ap-card ap-panel" data-panel="articles">
+                <div class="ap-panel-head">
+                    <h2>All articles</h2>
+                    <input type="search" id="ap-article-search" placeholder="Search by title, category or author…">
+                </div>
+                <div class="ap-table-wrap">
+                    <table class="ap-table">
+                        <thead>
+                            <tr><th>ID</th><th>Title</th><th>Category</th><th>Author</th><th>Published</th><th></th></tr>
+                        </thead>
+                        <tbody id="ap-articles-body"><tr><td colspan="6">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- USUARIOS -->
+            <section class="ap-card ap-panel" data-panel="users" hidden>
+                <div class="ap-panel-head">
+                    <h2>All users</h2>
+                    <input type="search" id="ap-user-search" placeholder="Search by username or email…">
+                </div>
+                <div class="ap-table-wrap">
+                    <table class="ap-table">
+                        <thead>
+                            <tr><th>ID</th><th>Username</th><th>Email</th><th>Articles</th><th>Saved</th><th></th></tr>
+                        </thead>
+                        <tbody id="ap-users-body"><tr><td colspan="6">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- AGENTES DE IA (espacio reservado) -->
+            <section class="ap-card ap-panel" data-panel="agents" hidden>
+                <div class="ap-panel-head">
+                    <h2>AI Agents</h2>
+                    <span class="ap-badge">Coming soon</span>
+                </div>
+                <p class="ap-muted">
+                    This space is ready for AI agents that help run Worldnews — for example, summarizing articles,
+                    suggesting categories or reviewing content before it is published. Agents added later will appear here.
+                </p>
+                <div id="ap-agents-list" class="ap-agents-grid"></div>
+                <div class="ap-agent-console">
+                    <label for="ap-agent-input">Agent console</label>
+                    <textarea id="ap-agent-input" rows="3" placeholder="Instructions for an AI agent…" disabled></textarea>
+                    <div class="ap-agent-actions">
+                        <select id="ap-agent-select" disabled><option>No agents configured</option></select>
+                        <button class="ap-btn ap-btn-primary" id="ap-agent-run" disabled>Run agent</button>
+                    </div>
+                    <div id="ap-agent-output" class="ap-agent-output">Agent output will appear here.</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Ventana para editar un artículo -->
+    <div id="ap-article-modal" class="ap-modal" hidden>
+        <div class="ap-modal-box ap-modal-wide">
+            <div class="ap-modal-head">
+                <h3>Edit article <small id="ap-article-id"></small></h3>
+                <button class="ap-close" data-close>&times;</button>
+            </div>
+            <div class="ap-modal-body">
+                <label>Title <input type="text" id="ap-a-title" maxlength="255"></label>
+                <div class="ap-row">
+                    <label>Category <input type="text" id="ap-a-category" maxlength="100"></label>
+                    <label>Cover image URL <input type="text" id="ap-a-image" placeholder="https://…"></label>
+                </div>
+                <div class="ap-editor-toolbar">
+                    <button type="button" data-cmd="bold"><b>B</b></button>
+                    <button type="button" data-cmd="italic"><i>I</i></button>
+                    <button type="button" data-cmd="underline"><u>U</u></button>
+                    <button type="button" data-cmd="formatBlock" data-val="H2">H2</button>
+                    <button type="button" data-cmd="formatBlock" data-val="P">¶</button>
+                    <button type="button" data-cmd="insertUnorderedList">• List</button>
+                    <button type="button" data-cmd="createLink">🔗 Link</button>
+                    <button type="button" data-cmd="insertImage">🖼️ Image</button>
+                    <button type="button" data-cmd="removeFormat">Clear</button>
+                    <button type="button" id="ap-toggle-html" class="ap-push-right">&lt;/&gt; HTML</button>
+                </div>
+                <div id="ap-a-content" class="ap-editor" contenteditable="true"></div>
+                <textarea id="ap-a-html" class="ap-editor ap-html" hidden></textarea>
+            </div>
+            <div class="ap-modal-foot">
+                <a id="ap-a-view" class="ap-btn" target="_blank">View article ↗</a>
+                <button class="ap-btn" data-close>Cancel</button>
+                <button class="ap-btn ap-btn-primary" id="ap-a-save">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana para editar un usuario -->
+    <div id="ap-user-modal" class="ap-modal" hidden>
+        <div class="ap-modal-box">
+            <div class="ap-modal-head">
+                <h3>Edit user <small id="ap-user-id"></small></h3>
+                <button class="ap-close" data-close>&times;</button>
+            </div>
+            <div class="ap-modal-body">
+                <label>Username <input type="text" id="ap-u-username" maxlength="100"></label>
+                <label>Email <input type="email" id="ap-u-email" maxlength="255"></label>
+            </div>
+            <div class="ap-modal-foot">
+                <button class="ap-btn" data-close>Cancel</button>
+                <button class="ap-btn ap-btn-primary" id="ap-u-save">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h1>Angel Gabriel Rivera Resto was here</h1>
+        <h2>All rights reserved to Worldnews&#169</h2>
+    </footer>
+
+    <script src="../dialogs.js"></script>
+    <script src="../admin-panel.js"></script>
+</body>
+</html>

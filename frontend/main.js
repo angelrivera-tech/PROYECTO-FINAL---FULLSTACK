@@ -102,6 +102,8 @@ async function cerrarSesion(event) {
     event.preventDefault();
     localStorage.removeItem('usuarioActivo');
     localStorage.removeItem('usuarioId');
+    localStorage.removeItem('wnSessionToken');
+    localStorage.removeItem('wnIsAdmin');
     await wnAlert('Has cerrado sesión correctamente.', { title: 'Sesión cerrada' });
     window.location.href = '../pages/index.html';
 }
