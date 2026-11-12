@@ -116,7 +116,7 @@
             let input = null;
             if (kind === 'prompt') {
                 input = document.createElement('input');
-                input.type = 'text';
+                input.type = options.inputType || 'text';
                 input.className = 'wn-dialog-input';
                 input.placeholder = options.placeholder || '';
                 input.value = options.defaultValue || '';
