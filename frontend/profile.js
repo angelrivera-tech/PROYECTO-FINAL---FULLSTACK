@@ -197,6 +197,8 @@
             }
             localStorage.removeItem('usuarioActivo');
             localStorage.removeItem('usuarioId');
+            localStorage.removeItem('wnSessionToken');
+            localStorage.removeItem('wnIsAdmin');
             await wnAlert('Your account has been deleted. The articles you published are still available.', { title: 'Account deleted' });
             window.location.href = '../pages/index.html';
         } catch (error) {

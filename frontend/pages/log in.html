@@ -105,6 +105,9 @@
                     // Guardar la sesión en el navegador para que el panel de administración y el menú la reconozcan
                     localStorage.setItem('usuarioActivo', data.username);
                     localStorage.setItem('usuarioId', data.userId);
+                    if (data.sessionToken) localStorage.setItem('wnSessionToken', data.sessionToken);
+                    if (data.isAdmin) localStorage.setItem('wnIsAdmin', '1');
+                    else localStorage.removeItem('wnIsAdmin');
 
                     await wnAlert('¡Login exitoso! Bienvenido, ' + data.username, { title: 'Bienvenido' });
                     window.location.href = '../pages/index.html'; 

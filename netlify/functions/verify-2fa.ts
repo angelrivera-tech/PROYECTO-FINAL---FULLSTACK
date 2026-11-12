@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { usuarios } from "../../db/schema.js";
 import { readJson } from "../lib/shared.js";
+import { createSessionToken, isAdminUsername } from "../lib/session.js";
 
 // Paso 2: valida el código de 6 dígitos
 export default async (req: Request) => {
@@ -37,6 +38,9 @@ export default async (req: Request) => {
       message: "¡Login exitoso!",
       username: user.username,
       userId: user.id,
+      // Token firmado para las acciones que necesitan una sesión verificada (panel de administración)
+      sessionToken: await createSessionToken(user.id),
+      isAdmin: isAdminUsername(user.username),
     });
   } catch (err) {
     console.error(err);
