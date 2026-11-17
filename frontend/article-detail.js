@@ -1,6 +1,20 @@
 // article-detail.js - Carga un artículo específico por su ID desde la base de datos
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Header fijo: se compacta al bajar para no tapar el artículo
+    const header = document.querySelector('body.article-page > header');
+    if (header) {
+        // Umbrales distintos para compactar/expandir: evita parpadeo cuando
+        // el cambio de altura del header mueve la posición del scroll
+        const updateHeader = () => {
+            const compact = header.classList.contains('is-compact');
+            if (!compact && window.scrollY > 120) header.classList.add('is-compact');
+            else if (compact && window.scrollY < 10) header.classList.remove('is-compact');
+        };
+        window.addEventListener('scroll', updateHeader, { passive: true });
+        updateHeader();
+    }
+
     const container = document.getElementById('single-article-container');
     
     // Extraer el ID de la URL (ej: article.html?id=3 -> id = 3)
