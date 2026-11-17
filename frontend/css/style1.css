@@ -378,3 +378,242 @@ footer h1, footer h2 {
     max-width: 100%;
     height: auto;
 }
+
+/* ==========================================
+   HOME PAGE: HORIZONTAL CATEGORY ROWS
+   Each category is its own row of cards that
+   scrolls sideways when there are more news.
+   ========================================== */
+#articles-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.category-row {
+    margin: 10px 0 34px;
+}
+
+.category-row-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 3px solid #111111;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+
+.category-row-title {
+    margin: 0;
+    font-size: 1.35rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #111111;
+}
+
+.category-row-count {
+    font-size: 0.85rem;
+    color: #666666;
+}
+
+.category-row-nav {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.row-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #111111;
+    background: #ffffff;
+    color: #111111;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 3px;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.category-row.scrollable .row-arrow {
+    display: inline-flex;
+}
+
+.row-arrow:hover:not(:disabled) {
+    background: #111111;
+    color: #ffffff;
+}
+
+.row-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.category-row-track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 6px 4px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #888888 transparent;
+    outline: none;
+}
+
+.category-row-track:focus-visible {
+    box-shadow: 0 0 0 2px #0275d8;
+    border-radius: 8px;
+}
+
+.category-row-track::-webkit-scrollbar {
+    height: 8px;
+}
+
+.category-row-track::-webkit-scrollbar-thumb {
+    background: #888888;
+    border-radius: 4px;
+}
+
+.category-row-track::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.category-row-track .article-item {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+    display: flex;
+}
+
+.category-row-track .article-card-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.category-row-track .article-card-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.category-row-track a.article-thumb-link {
+    display: block;
+    margin: 0;
+    max-width: none;
+    flex: none;
+}
+
+.category-row-track .article-thumbnail {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    height: 170px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.category-row-track a.article-thumb-link:hover img {
+    transform: none;
+    box-shadow: none;
+    filter: brightness(1.05);
+}
+
+.category-row-track .article-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 14px 16px 16px;
+}
+
+.category-row-track .article-category {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #111111;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.category-row-track h3 {
+    margin: 10px 0 6px;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
+.category-row-track a.article-title-link {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    max-width: none;
+    text-align: left;
+}
+
+.category-row-track .article-date {
+    color: #777777;
+    font-size: 0.8rem;
+}
+
+.category-row-track .article-excerpt {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin: 8px 0 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.category-row-track .article-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+}
+
+.category-row-track .article-card-actions .read-more-btn {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.no-search-results {
+    text-align: center;
+    color: #888888;
+    margin: 30px 0;
+}
+
+@media (max-width: 600px) {
+    #articles-container {
+        padding: 0 12px;
+    }
+
+    .category-row-track .article-item {
+        flex-basis: 78vw;
+    }
+
+    .row-arrow {
+        width: 32px;
+        height: 32px;
+    }
+}
