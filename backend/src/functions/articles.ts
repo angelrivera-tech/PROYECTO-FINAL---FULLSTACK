@@ -1,7 +1,7 @@
 import type { Config, Context } from "@netlify/functions";
 import { desc, eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { articulos, usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { articulos, usuarios } from "../db/schema.js";
 import { readJson, resolveArticleImage, toArticleJson } from "../lib/shared.js";
 
 const NO_IMAGE_ERROR = "El artículo necesita una imagen para mostrarse. Añade una imagen de portada antes de publicar.";

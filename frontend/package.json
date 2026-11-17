@@ -1,0 +1,6 @@
+{
+  "name": "worldnews-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Worldnews static site: HTML pages, CSS, browser JavaScript and images (served from src/)"
+}

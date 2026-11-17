@@ -1,7 +1,7 @@
 import type { Config } from "@netlify/functions";
 import bcrypt from "bcryptjs";
-import { db } from "../../db/index.js";
-import { usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { usuarios } from "../db/schema.js";
 import { readJson } from "../lib/shared.js";
 
 export default async (req: Request) => {

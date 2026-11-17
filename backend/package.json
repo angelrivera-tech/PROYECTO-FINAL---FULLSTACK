@@ -1,0 +1,7 @@
+{
+  "name": "worldnews-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Worldnews API: Netlify Functions (src/functions), database schema (src/db) and shared server code (src/lib). Dependencies are installed from the root package.json."
+}

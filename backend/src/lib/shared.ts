@@ -1,4 +1,4 @@
-import { articulos } from "../../db/schema.js";
+import { articulos } from "../db/schema.js";
 
 type Articulo = typeof articulos.$inferSelect;
 

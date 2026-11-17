@@ -2,8 +2,8 @@ import type { Config } from "@netlify/functions";
 import bcrypt from "bcryptjs";
 import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { usuarios } from "../db/schema.js";
 import { readJson } from "../lib/shared.js";
 import { MailConfigError, emailFailureMessage, emailTemplate, escapeHtml, sendMail } from "../lib/mailer.js";
 
