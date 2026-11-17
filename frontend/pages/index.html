@@ -63,17 +63,32 @@
     <script>
         // Función para la búsqueda de artículos
         function searchArticles() {
-            let input = document.getElementById('articleSearch').value.toLowerCase();
-            let articles = document.getElementsByClassName('article-item');
-            
-            for (let i = 0; i < articles.length; i++) {
-                let text = articles[i].innerText.toLowerCase();
-                if (text.includes(input)) {
-                    articles[i].style.display = "";
-                } else {
-                    articles[i].style.display = "none";
+            const input = document.getElementById('articleSearch').value.toLowerCase().trim();
+            const rows = document.getElementsByClassName('category-row');
+            let anyVisible = false;
+
+            for (const row of rows) {
+                // Si la búsqueda coincide con el nombre de la categoría, se muestra la fila completa
+                const categoryName = row.querySelector('.category-row-title').innerText.toLowerCase();
+                const matchesCategory = input && categoryName.includes(input);
+                let visibleInRow = 0;
+
+                for (const article of row.getElementsByClassName('article-item')) {
+                    const show = !input || matchesCategory || article.innerText.toLowerCase().includes(input);
+                    article.style.display = show ? '' : 'none';
+                    if (show) visibleInRow++;
+                }
+
+                row.style.display = visibleInRow ? '' : 'none';
+                if (visibleInRow) {
+                    anyVisible = true;
+                    row.querySelector('.category-row-track').scrollLeft = 0;
                 }
             }
+
+            const noResults = document.getElementById('no-search-results');
+            if (noResults) noResults.hidden = anyVisible || rows.length === 0;
+            if (typeof updateAllRowArrows === 'function') updateAllRowArrows();
         }
 
         // Función para abrir y cerrar el panel lateral de Account
