@@ -1,7 +1,7 @@
 import type { Config, Context } from "@netlify/functions";
 import { and, desc, eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { articulos, articulosGuardados, usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { articulos, articulosGuardados, usuarios } from "../db/schema.js";
 import { readJson, toArticleJson } from "../lib/shared.js";
 
 // Artículos guardados ("pin") para leer después

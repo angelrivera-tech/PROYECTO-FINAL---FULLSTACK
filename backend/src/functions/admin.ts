@@ -1,8 +1,8 @@
 import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
 import { and, count, desc, eq, ne } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { articulos, articulosGuardados, usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { articulos, articulosGuardados, usuarios } from "../db/schema.js";
 import { readJson, resolveArticleImage, toArticleJson } from "../lib/shared.js";
 import { isAdminUsername, requireAdmin } from "../lib/session.js";
 

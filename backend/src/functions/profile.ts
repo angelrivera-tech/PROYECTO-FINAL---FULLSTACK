@@ -2,8 +2,8 @@ import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
 import bcrypt from "bcryptjs";
 import { count, eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { articulos, articulosGuardados, usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { articulos, articulosGuardados, usuarios } from "../db/schema.js";
 import { maskEmail } from "../lib/mailer.js";
 import { readJson } from "../lib/shared.js";
 

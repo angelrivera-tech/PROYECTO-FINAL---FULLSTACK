@@ -1,9 +1,14 @@
 [build]
-  publish = "frontend"
+  # Static site (HTML, CSS, JS, images)
+  publish = "frontend/src"
 
-# The site's home page lives in frontend/pages/index.html, so there is no
+[functions]
+  # Backend API (Netlify Functions)
+  directory = "backend/src/functions"
+
+# The site's home page lives in frontend/src/pages/index.html, so there is no
 # index.html at the root of the published folder. Send visitors there.
-# A redirect (not a rewrite) keeps the "../css" and "../imagenes" relative paths working.
+# A redirect (not a rewrite) keeps the "../css", "../js" and "../imagenes" relative paths working.
 [[redirects]]
   from = "/"
   to = "/pages/index.html"

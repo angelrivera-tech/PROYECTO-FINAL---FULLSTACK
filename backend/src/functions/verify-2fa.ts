@@ -1,7 +1,7 @@
 import type { Config } from "@netlify/functions";
 import { eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { usuarios } from "../db/schema.js";
 import { readJson } from "../lib/shared.js";
 import { createSessionToken, isAdminUsername } from "../lib/session.js";
 

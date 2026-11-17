@@ -1,8 +1,8 @@
 import { getStore } from "@netlify/blobs";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { usuarios } from "../db/schema.js";
 
 // Cuentas con acceso al panel de administración (nombre de usuario exacto)
 export const ADMIN_USERNAMES = ["Angel"];

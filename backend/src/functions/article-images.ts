@@ -1,8 +1,8 @@
 import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
 import { eq } from "drizzle-orm";
-import { db } from "../../db/index.js";
-import { usuarios } from "../../db/schema.js";
+import { db } from "../db/index.js";
+import { usuarios } from "../db/schema.js";
 
 // Imágenes subidas desde el editor de artículos (portada o imágenes dentro del texto)
 //   POST /api/article-images?usuario_id=5  (cuerpo = imagen) -> { url }
