@@ -1,0 +1,43 @@
+/* Article page: the header stays pinned to the top while reading,
+   so the logo and Home link are always one click away. */
+body.article-page {
+    /* "hidden" turns body into its own scroll box, which stops sticky from working.
+       "clip" still hides sideways overflow without that side effect. */
+    overflow-x: clip;
+}
+
+body.article-page > header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: padding 0.25s ease, box-shadow 0.25s ease;
+}
+
+body.article-page > header h1 {
+    transition: margin 0.25s ease, font-size 0.25s ease;
+}
+
+body.article-page > header .brand-logo {
+    transition: width 0.25s ease, height 0.25s ease, transform 0.6s ease;
+}
+
+/* Compact version once the reader scrolls down, so it doesn't cover the text */
+body.article-page > header.is-compact {
+    padding-top: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+body.article-page > header.is-compact h1 {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+}
+
+body.article-page > header.is-compact .brand-logo {
+    width: 34px;
+    height: 34px;
+}
+
+body.article-page > header.is-compact .header-links {
+    padding-top: 6px;
+    padding-bottom: 4px;
+}
