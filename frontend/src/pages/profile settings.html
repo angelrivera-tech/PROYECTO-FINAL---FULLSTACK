@@ -28,11 +28,11 @@
         <h1><a class="brand" href="index.html"><img class="brand-logo" src="../imagenes/logo.png" alt="" width="52" height="52">Worldnews</a></h1>
         <div class="header-links">
             <a href="../pages/index.html">Home</a>
-            <a href="../pages/about us.html">about us</a>
+            <a href="../pages/about%20us.html">about us</a>
             <a href="../pages/subscriptions.html">donations</a>
-            <a href="../pages/contact us.html">contact us</a>
-            <a href="../pages/sign in.html">sign in</a>
-            <a href="../pages/log in.html">log in</a>
+            <a href="../pages/contact%20us.html">contact us</a>
+            <a href="../pages/sign%20in.html">sign in</a>
+            <a href="../pages/log%20in.html">log in</a>
             <!-- Botón de Account que abre el menú lateral -->
             <button class="account-btn" onclick="toggleSidebar()">Account 👤</button>
         </div>
@@ -41,13 +41,13 @@
     <!-- Menú Lateral (Sidebar Drawer) -->
     <div id="accountSidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>My Account</h3>
+            <h2>My Account</h2>
             <span class="close-btn" onclick="toggleSidebar()">&times;</span>
         </div>
         <div class="sidebar-content">
-            <a href="../pages/articles admin.html" class="admin-link">Manage Articles 🛠️</a>
-            <a href="../pages/profile settings.html">Profile Settings</a>
-            <a href="../pages/Saved News.html">My Saved News 📌</a>
+            <a href="../pages/articles%20admin.html" class="admin-link">Manage Articles 🛠️</a>
+            <a href="../pages/profile%20settings.html">Profile Settings</a>
+            <a href="../pages/Saved%20News.html">My Saved News 📌</a>
             <hr>
             <a href="#" onclick="cerrarSesion(event)" style="color: #d9534f;">Log Out</a>
         </div>
@@ -69,7 +69,7 @@
     <!-- Aviso cuando no hay sesión -->
     <div id="profileLoggedOut" class="profile-card profile-logged-out" hidden>
         <p>You need to log in to see your profile.</p>
-        <a class="profile-btn" href="../pages/log in.html">Log in</a>
+        <a class="profile-btn" href="../pages/log%20in.html">Log in</a>
     </div>
 
     <p id="profileStatus" class="no-saved-msg" style="display: block;">Loading your profile...</p>
@@ -79,7 +79,7 @@
         <section class="profile-card">
             <div class="card-category">Profile picture</div>
             <div class="avatar-wrapper">
-                <img id="avatarImage" class="profile-avatar" alt="Profile picture" hidden>
+                <img id="avatarImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="profile-avatar" alt="Profile picture" hidden>
                 <div id="avatarInitial" class="profile-avatar avatar-placeholder" aria-hidden="true">?</div>
             </div>
             <p class="profile-hint">JPG, PNG, WEBP or GIF · up to 2 MB</p>
@@ -117,11 +117,11 @@
                 <p class="profile-hint sensitive-hint">For your security, this information is hidden. To change it, we send a secure link to your email.</p>
             </div>
             <div class="profile-stats">
-                <a class="profile-stat" href="../pages/Saved News.html">
+                <a class="profile-stat" href="../pages/Saved%20News.html">
                     <span id="statPublished" class="stat-number">0</span>
                     <span class="stat-label">Published articles</span>
                 </a>
-                <a class="profile-stat" href="../pages/Saved News.html">
+                <a class="profile-stat" href="../pages/Saved%20News.html">
                     <span id="statSaved" class="stat-number">0</span>
                     <span class="stat-label">Saved articles</span>
                 </a>
