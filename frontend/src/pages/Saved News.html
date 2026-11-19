@@ -27,11 +27,11 @@
         <h1><a class="brand" href="index.html"><img class="brand-logo" src="../imagenes/logo.png" alt="" width="52" height="52">Worldnews</a></h1>
         <div class="header-links">
             <a href="../pages/index.html">Home</a>
-            <a href="../pages/about us.html">about us</a>
+            <a href="../pages/about%20us.html">about us</a>
             <a href="../pages/subscriptions.html">donations</a>
-            <a href="../pages/contact us.html">contact us</a>
-            <a href="../pages/sign in.html">sign in</a>
-            <a href="../pages/log in.html">log in</a>
+            <a href="../pages/contact%20us.html">contact us</a>
+            <a href="../pages/sign%20in.html">sign in</a>
+            <a href="../pages/log%20in.html">log in</a>
             <!-- Botón de Account que abre el menú lateral -->
             <button class="account-btn" onclick="toggleSidebar()">Account 👤</button>
         </div>
@@ -40,13 +40,13 @@
     <!-- Menú Lateral (Sidebar Drawer) -->
     <div id="accountSidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>My Account</h3>
+            <h2>My Account</h2>
             <span class="close-btn" onclick="toggleSidebar()">&times;</span>
         </div>
         <div class="sidebar-content">
-            <a href="../pages/articles admin.html" class="admin-link">Manage Articles 🛠️</a>
-            <a href="../pages/profile settings.html">Profile Settings</a>
-            <a href="../pages/Saved News.html">My Saved News 📌</a>
+            <a href="../pages/articles%20admin.html" class="admin-link">Manage Articles 🛠️</a>
+            <a href="../pages/profile%20settings.html">Profile Settings</a>
+            <a href="../pages/Saved%20News.html">My Saved News 📌</a>
             <hr>
             <a href="#" onclick="cerrarSesion(event)" style="color: #d9534f;">Log Out</a>
         </div>
@@ -126,7 +126,7 @@
                     <input type="file" id="editCoverFile" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
                 </div>
                 <div class="edit-cover-preview">
-                    <img id="editCoverPreviewImg" alt="Cover preview" hidden>
+                    <img id="editCoverPreviewImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Cover preview" hidden>
                     <span id="editCoverStatus" class="edit-cover-status missing">No cover image yet — an image is required to save.</span>
                     <button type="button" class="edit-tool-btn" id="editCoverRemoveBtn" hidden>✕ Remove</button>
                 </div>
