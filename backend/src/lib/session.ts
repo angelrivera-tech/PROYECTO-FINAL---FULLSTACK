@@ -1,5 +1,6 @@
 import { getStore } from "@netlify/blobs";
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes } from "node:crypto";
+import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { usuarios } from "../db/schema.js";
@@ -10,14 +11,17 @@ export const ADMIN_USERNAMES = ["Angel"];
 export const isAdminUsername = (username: unknown) =>
   typeof username === "string" && ADMIN_USERNAMES.includes(username);
 
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 días
+const SESSION_TTL = "7d"; // duración de la sesión
 const SECRET_KEY = "session-secret";
+const ISSUER = "worldnews";
 
 let cachedSecret: string | null = null;
 
-// Clave secreta para firmar las sesiones. Se genera una sola vez y se guarda en Netlify Blobs.
+// Clave secreta para firmar los JWT.
+// Se usa la variable de entorno JWT_SECRET si existe; si no, se genera una sola vez y se guarda en Netlify Blobs.
 async function getSecret(): Promise<string> {
   if (cachedSecret) return cachedSecret;
+  if (process.env.JWT_SECRET) return (cachedSecret = process.env.JWT_SECRET);
   const store = getStore({ name: "app-config", consistency: "strong" });
   let secret: string | null = await store.get(SECRET_KEY, { type: "text" });
   if (!secret) {
@@ -29,39 +33,57 @@ async function getSecret(): Promise<string> {
   return secret;
 }
 
-const sign = (payload: string, secret: string) => createHmac("sha256", secret).update(payload).digest("base64url");
-
-// Crea un token de sesión firmado que se entrega al iniciar sesión con 2FA
+// Crea un JWT (HS256) que se entrega al completar el inicio de sesión con 2FA.
+// El "sub" (subject) del token es el ID del usuario.
 export async function createSessionToken(userId: number): Promise<string> {
-  const payload = Buffer.from(JSON.stringify({ uid: userId, exp: Date.now() + SESSION_TTL_MS })).toString("base64url");
-  return `${payload}.${sign(payload, await getSecret())}`;
+  return jwt.sign({}, await getSecret(), {
+    algorithm: "HS256",
+    subject: String(userId),
+    issuer: ISSUER,
+    expiresIn: SESSION_TTL,
+  });
 }
 
-// Devuelve el ID del usuario si el token es válido y no ha expirado
+// Devuelve el ID del usuario si el JWT es válido y no ha expirado; si no, null
 export async function verifySessionToken(token: string | null | undefined): Promise<number | null> {
   if (!token) return null;
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature) return null;
-  const expected = Buffer.from(sign(payload, await getSecret()));
-  const given = Buffer.from(signature);
-  if (expected.length !== given.length || !timingSafeEqual(expected, given)) return null;
   try {
-    const { uid, exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    if (!Number.isInteger(uid) || typeof exp !== "number" || exp < Date.now()) return null;
-    return uid;
+    const payload = jwt.verify(token, await getSecret(), { algorithms: ["HS256"], issuer: ISSUER });
+    const uid = typeof payload === "object" ? Number(payload.sub) : NaN;
+    return Number.isInteger(uid) && uid > 0 ? uid : null;
   } catch {
-    return null;
+    return null; // firma incorrecta, token expirado o mal formado
+  }
+}
+
+// Lee el token de la cabecera "Authorization: Bearer <token>"
+export function bearerToken(req: Request): string | null {
+  const header = req.headers.get("authorization") || "";
+  return header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() || null : null;
+}
+
+const sessionError = () =>
+  Response.json({ error: "Tu sesión no es válida o ha expirado. Inicia sesión de nuevo." }, { status: 401 });
+
+// Protección de rutas: exige un JWT válido de un usuario que todavía existe.
+// Devuelve { userId } o { error } (una respuesta 401 lista para devolver).
+export async function requireUser(req: Request): Promise<{ userId: number; error?: undefined } | { error: Response }> {
+  const userId = await verifySessionToken(bearerToken(req));
+  if (!userId) return { error: sessionError() };
+  try {
+    const [user] = await db.select({ id: usuarios.id }).from(usuarios).where(eq(usuarios.id, userId));
+    if (!user) return { error: sessionError() };
+    return { userId };
+  } catch (err) {
+    console.error(err);
+    return { error: Response.json({ error: "Error al comprobar la sesión" }, { status: 500 }) };
   }
 }
 
 // Comprueba que la petición venga de un administrador con sesión válida
 export async function requireAdmin(req: Request) {
-  const header = req.headers.get("authorization") || "";
-  const token = header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : null;
-  const userId = await verifySessionToken(token);
-  if (!userId) {
-    return { error: Response.json({ error: "Tu sesión no es válida o ha expirado. Inicia sesión de nuevo." }, { status: 401 }) };
-  }
+  const userId = await verifySessionToken(bearerToken(req));
+  if (!userId) return { error: sessionError() };
   const [user] = await db
     .select({ id: usuarios.id, username: usuarios.username })
     .from(usuarios)

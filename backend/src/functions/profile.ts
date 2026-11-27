@@ -6,13 +6,14 @@ import { db } from "../db/index.js";
 import { articulos, articulosGuardados, usuarios } from "../db/schema.js";
 import { maskEmail } from "../lib/mailer.js";
 import { readJson } from "../lib/shared.js";
+import { requireUser } from "../lib/session.js";
 
-// Perfil del usuario y foto de perfil
-//   GET    /api/profile?usuario_id=5                 -> datos del usuario
-//   GET    /api/profile/avatar/5                     -> imagen de perfil
-//   PUT    /api/profile/avatar?usuario_id=5  (image) -> subir / cambiar foto
-//   DELETE /api/profile/avatar?usuario_id=5          -> quitar foto
-//   DELETE /api/profile?usuario_id=5  { password }    -> eliminar la cuenta (los artículos publicados se conservan)
+// Perfil del usuario y foto de perfil. Todas las rutas, menos ver la imagen, son protegidas (JWT):
+//   GET    /api/profile                 -> datos del usuario
+//   GET    /api/profile/avatar/5        -> imagen de perfil (pública)
+//   PUT    /api/profile/avatar  (image) -> subir / cambiar foto
+//   DELETE /api/profile/avatar          -> quitar foto
+//   DELETE /api/profile  { password }   -> eliminar la cuenta (los artículos publicados se conservan)
 
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -51,10 +52,10 @@ export default async (req: Request, context: Context) => {
     });
   }
 
-  const usuarioId = parseId(url.searchParams.get("usuario_id"));
-  if (!usuarioId) {
-    return Response.json({ error: "Debes iniciar sesión para ver tu perfil" }, { status: 401 });
-  }
+  // Rutas protegidas: el usuario siempre sale del JWT
+  const auth = await requireUser(req);
+  if (auth.error) return auth.error;
+  const usuarioId = auth.userId;
 
   try {
     const user = await findUser(usuarioId);

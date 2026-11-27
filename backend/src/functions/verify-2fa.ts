@@ -38,7 +38,7 @@ export default async (req: Request) => {
       message: "¡Login exitoso!",
       username: user.username,
       userId: user.id,
-      // Token firmado para las acciones que necesitan una sesión verificada (panel de administración)
+      // JWT que el navegador envía en la cabecera Authorization para las rutas protegidas
       sessionToken: await createSessionToken(user.id),
       isAdmin: isAdminUsername(user.username),
     });

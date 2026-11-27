@@ -1,11 +1,9 @@
 import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
-import { eq } from "drizzle-orm";
-import { db } from "../db/index.js";
-import { usuarios } from "../db/schema.js";
+import { requireUser } from "../lib/session.js";
 
 // Imágenes subidas desde el editor de artículos (portada o imágenes dentro del texto)
-//   POST /api/article-images?usuario_id=5  (cuerpo = imagen) -> { url }
+//   POST /api/article-images  (JWT, cuerpo = imagen) -> { url }  [protegida]
 //   GET  /api/article-images/:key                            -> la imagen
 
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -35,13 +33,10 @@ export default async (req: Request, context: Context) => {
   }
 
   if (req.method === "POST") {
-    const usuarioId = Number(new URL(req.url).searchParams.get("usuario_id"));
-    if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
-      return Response.json({ error: "Debes iniciar sesión para subir imágenes" }, { status: 401 });
-    }
+    const auth = await requireUser(req);
+    if (auth.error) return auth.error;
+    const usuarioId = auth.userId;
     try {
-      const [user] = await db.select({ id: usuarios.id }).from(usuarios).where(eq(usuarios.id, usuarioId));
-      if (!user) return Response.json({ error: "Usuario no encontrado" }, { status: 401 });
 
       const contentType = (req.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
       const ext = TYPES[contentType];
