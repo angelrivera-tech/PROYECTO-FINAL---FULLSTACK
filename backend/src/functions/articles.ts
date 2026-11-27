@@ -1,8 +1,12 @@
 import type { Config, Context } from "@netlify/functions";
 import { desc, eq } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { articulos, usuarios } from "../db/schema.js";
+import { articulos } from "../db/schema.js";
 import { readJson, resolveArticleImage, toArticleJson } from "../lib/shared.js";
+import { requireUser } from "../lib/session.js";
+
+// GET es público. POST, PUT y DELETE son rutas protegidas: necesitan un JWT válido
+// y el autor se toma del token, nunca de los datos que envía el navegador.
 
 const NO_IMAGE_ERROR = "El artículo necesita una imagen para mostrarse. Añade una imagen de portada antes de publicar.";
 
@@ -28,7 +32,9 @@ export default async (req: Request, context: Context) => {
     }
 
     if (req.method === "PUT") {
-      const { title, category, image_url, content, usuario_id } = await readJson(req);
+      const auth = await requireUser(req);
+      if (auth.error) return auth.error;
+      const { title, category, image_url, content } = await readJson(req);
       if (!title || !content) {
         return Response.json({ error: "El título y el contenido son obligatorios" }, { status: 400 });
       }
@@ -38,8 +44,7 @@ export default async (req: Request, context: Context) => {
         if (!existing) return Response.json({ error: "Artículo no encontrado" }, { status: 404 });
 
         // Solo el autor del artículo puede editarlo
-        const authorId = Number(usuario_id);
-        if (existing.usuarioId === null || existing.usuarioId !== authorId) {
+        if (existing.usuarioId === null || existing.usuarioId !== auth.userId) {
           return Response.json({ error: "Solo el autor puede editar este artículo" }, { status: 403 });
         }
 
@@ -66,12 +71,13 @@ export default async (req: Request, context: Context) => {
     }
 
     if (req.method === "DELETE") {
+      const auth = await requireUser(req);
+      if (auth.error) return auth.error;
       try {
         // Solo el autor del artículo puede eliminarlo
-        const authorId = Number(new URL(req.url).searchParams.get("usuario_id"));
         const [existing] = await db.select().from(articulos).where(eq(articulos.id, id));
         if (!existing) return Response.json({ error: "Artículo no encontrado" }, { status: 404 });
-        if (!Number.isInteger(authorId) || existing.usuarioId === null || existing.usuarioId !== authorId) {
+        if (existing.usuarioId === null || existing.usuarioId !== auth.userId) {
           return Response.json({ error: "Solo el autor puede eliminar este artículo" }, { status: 403 });
         }
         await db.delete(articulos).where(eq(articulos.id, id));
@@ -110,7 +116,9 @@ export default async (req: Request, context: Context) => {
   }
 
   if (req.method === "POST") {
-    const { title, category, image_url, content, usuario_id } = await readJson(req);
+    const auth = await requireUser(req);
+    if (auth.error) return auth.error;
+    const { title, category, image_url, content } = await readJson(req);
     if (!title || !content) {
       return Response.json({ error: "El título y el contenido son obligatorios" }, { status: 400 });
     }
@@ -120,14 +128,6 @@ export default async (req: Request, context: Context) => {
     if (!imageUrl) return Response.json({ error: NO_IMAGE_ERROR }, { status: 400 });
 
     try {
-      // Solo enlazar el autor si el usuario existe realmente
-      let usuarioId: number | null = null;
-      const parsed = Number(usuario_id);
-      if (Number.isInteger(parsed)) {
-        const [author] = await db.select({ id: usuarios.id }).from(usuarios).where(eq(usuarios.id, parsed));
-        usuarioId = author ? author.id : null;
-      }
-
       const [created] = await db
         .insert(articulos)
         .values({
@@ -135,7 +135,7 @@ export default async (req: Request, context: Context) => {
           category: category || "General",
           imageUrl,
           content,
-          usuarioId,
+          usuarioId: auth.userId, // el autor es el usuario del JWT
         })
         .returning();
 

@@ -5,11 +5,12 @@ import { and, eq, gt, isNull, ne, sql } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { tokensCuenta, usuarios } from "../db/schema.js";
 import { readJson } from "../lib/shared.js";
+import { requireUser } from "../lib/session.js";
 import { MailConfigError, emailFailureMessage, emailTemplate, escapeHtml, maskEmail, sendMail } from "../lib/mailer.js";
 
 // Recuperación y cambio de datos de la cuenta mediante enlaces enviados por correo
 //   POST /api/account/forgot          { email }                     -> envía el usuario + enlace para nueva contraseña
-//   POST /api/account/request-change  { usuario_id, type }          -> type "password" | "email": enlace al correo actual
+//   POST /api/account/request-change  { type }  [protegida, JWT]    -> type "password" | "email": enlace al correo actual
 //   GET  /api/account/token?token=... -> valida el enlace y dice qué formulario mostrar
 //   POST /api/account/reset-password  { token, password }
 //   POST /api/account/change-email    { token, email }              -> envía un enlace de confirmación al correo nuevo
@@ -174,11 +175,10 @@ export default async (req: Request) => {
 
     // ---------- Cambio solicitado desde Profile Settings ----------
     if (action === "request-change") {
-      const usuarioId = Number(body.usuario_id);
+      const auth = await requireUser(req);
+      if (auth.error) return auth.error;
+      const usuarioId = auth.userId;
       const type = body.type === "email" ? "email" : body.type === "password" ? "password" : null;
-      if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
-        return Response.json({ error: "Debes iniciar sesión" }, { status: 401 });
-      }
       if (!type) return Response.json({ error: "Tipo de cambio no válido" }, { status: 400 });
 
       const [user] = await db.select().from(usuarios).where(eq(usuarios.id, usuarioId));

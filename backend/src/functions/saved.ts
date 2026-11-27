@@ -1,20 +1,20 @@
 import type { Config, Context } from "@netlify/functions";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { articulos, articulosGuardados, usuarios } from "../db/schema.js";
+import { articulos, articulosGuardados } from "../db/schema.js";
 import { readJson, toArticleJson } from "../lib/shared.js";
+import { requireUser } from "../lib/session.js";
 
-// Artículos guardados ("pin") para leer después
-//   GET    /api/saved?usuario_id=5            -> artículos guardados del usuario
-//   POST   /api/saved  { usuario_id, articulo_id } -> guardar
-//   DELETE /api/saved/:articuloId?usuario_id=5 -> quitar
+// Artículos guardados ("pin") para leer después. Todas las rutas son protegidas (JWT):
+//   GET    /api/saved                -> artículos guardados del usuario
+//   POST   /api/saved  { articulo_id } -> guardar
+//   DELETE /api/saved/:articuloId    -> quitar
 export default async (req: Request, context: Context) => {
-  const url = new URL(req.url);
+  const auth = await requireUser(req);
+  if (auth.error) return auth.error;
+  const usuarioId = auth.userId; // el usuario siempre sale del JWT
 
   if (req.method === "GET") {
-    const usuarioId = Number(url.searchParams.get("usuario_id"));
-    if (!Number.isInteger(usuarioId) || usuarioId <= 0) return Response.json([]);
-
     try {
       const rows = await db
         .select({ article: articulos, savedAt: articulosGuardados.fechaGuardado })
@@ -32,15 +32,12 @@ export default async (req: Request, context: Context) => {
 
   if (req.method === "POST") {
     const body = await readJson(req);
-    const usuarioId = Number(body.usuario_id);
     const articuloId = Number(body.articulo_id);
-    if (!Number.isInteger(usuarioId) || !Number.isInteger(articuloId)) {
-      return Response.json({ error: "Debes iniciar sesión para guardar artículos" }, { status: 400 });
+    if (!Number.isInteger(articuloId)) {
+      return Response.json({ error: "Artículo no válido" }, { status: 400 });
     }
 
     try {
-      const [user] = await db.select({ id: usuarios.id }).from(usuarios).where(eq(usuarios.id, usuarioId));
-      if (!user) return Response.json({ error: "Usuario no encontrado" }, { status: 404 });
       const [article] = await db.select({ id: articulos.id }).from(articulos).where(eq(articulos.id, articuloId));
       if (!article) return Response.json({ error: "Artículo no encontrado" }, { status: 404 });
 
@@ -57,9 +54,8 @@ export default async (req: Request, context: Context) => {
   }
 
   if (req.method === "DELETE") {
-    const usuarioId = Number(url.searchParams.get("usuario_id"));
     const articuloId = Number(context.params.id);
-    if (!Number.isInteger(usuarioId) || !Number.isInteger(articuloId)) {
+    if (!Number.isInteger(articuloId)) {
       return Response.json({ error: "Solicitud inválida" }, { status: 400 });
     }
 
